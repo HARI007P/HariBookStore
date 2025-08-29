@@ -1,18 +1,57 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function Footer() {
   return (
-    <footer className=" text-white">
+    <footer className="text-white">
       <hr className="border-gray-700" />
 
       <div className="container mx-auto px-6 py-10 grid gap-10 md:gap-0 md:grid-cols-3">
-     
-       
+        {/* Quick Links */}
+        <div className="space-y-3">
+          <h3 className="text-lg font-semibold text-pink-400">Quick Links</h3>
+          <ul className="space-y-2">
+            <li>
+              <Link
+                to="/about"
+                className="hover:text-pink-400 transition"
+              >
+                About Us
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/contact"
+                className="hover:text-pink-400 transition"
+              >
+                Contact Us
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/privacy"
+                className="hover:text-pink-400 transition"
+              >
+                Privacy Policy
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/terms"
+                className="hover:text-pink-400 transition"
+              >
+                Terms & Conditions
+              </Link>
+            </li>
+          </ul>
+        </div>
 
         {/* Contact Info */}
-        <div className=" space-y-3">
+        <div className="space-y-3">
           <h3 className="text-lg font-semibold text-pink-400">Contact</h3>
-          <p>📞 <span className="font-semibold">+91 6305219267</span></p>
+          <p>
+            📞 <span className="font-semibold">+91 6305219267</span>
+          </p>
           <p>
             📧{" "}
             <a
@@ -22,7 +61,9 @@ function Footer() {
               info.haribookstore1@gmail.com
             </a>
           </p>
-          <p>🏬 4-47 Main Street,Srikakulam,Andhra Pradesh, India 532401.</p>
+          <p>
+            🏬 4-47 Main Street, Srikakulam, Andhra Pradesh, India 532401.
+          </p>
         </div>
 
         {/* Social Icons */}
@@ -69,7 +110,7 @@ function Footer() {
       </div>
 
       {/* Footer Bottom Text */}
-      <div className=" py-4 mt-6">
+      <div className="py-4 mt-6">
         <p className="text-center text-sm md:text-base text-gray-400">
           © {new Date().getFullYear()}{" "}
           <span className="text-pink-400 font-semibold">Hari Book Store</span>. All rights reserved.
