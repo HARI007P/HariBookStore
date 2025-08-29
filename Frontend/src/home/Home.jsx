@@ -6,19 +6,15 @@ import Footer from "../components/Footer";
 
 function Home() {
   useEffect(() => {
-    // Check if this render is from navigation, not from reload
-    const reloaded = sessionStorage.getItem("homeReloaded");
-
-    if (!reloaded) {
-      sessionStorage.setItem("homeReloaded", "true");
+    // Trigger reload ONLY once after signup
+    if (localStorage.getItem("justSignedUp")) {
+      localStorage.removeItem("justSignedUp");
       window.location.reload();
-    } else {
-      sessionStorage.removeItem("homeReloaded");
     }
   }, []);
 
   return (
-    <div className=" text-white min-h-screen flex flex-col">
+    <div className="text-white min-h-screen flex flex-col">
       {/* Container with responsive padding */}
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-10 lg:px-16 py-6 md:py-10">
         <Navbar />
@@ -34,7 +30,7 @@ function Home() {
         </div>
       </div>
 
-      {/* Footer sticks at bottom */}
+      {/* Footer */}
       <Footer />
     </div>
   );
