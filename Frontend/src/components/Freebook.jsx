@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 function Freebook() {
   const settings = {
     dots: false,
-    infinite: true,
+    infinite: false,
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 3,
@@ -49,7 +49,7 @@ function Freebook() {
   };
 
   const filterData = list.filter(
-    (data) => data.category === "Sale" || data.category === "Sold Out"
+    (data) => data.category === "Sold Out"
   );
 
   return (
