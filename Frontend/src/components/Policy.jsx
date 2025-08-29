@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 export default function PrivacyPolicy() {
   const updated = "August 17, 2025"; // change as needed
   return (
-    <main className="min-h-screen  text-black">
+    <main className="min-h-screen  text-white">
       <div className=" flex   mx-auto px-4 py-2 "> 
                   <Link
                     to="/"
@@ -17,7 +17,7 @@ export default function PrivacyPolicy() {
           
         <header className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold">Privacy Policy</h1>
-          <p className="text-sm text-gray-500 mt-2">Last updated: {updated}</p>
+          <p className="text-sm  mt-2">Last updated: {updated}</p>
         </header>
 
         {/* TOC */}
