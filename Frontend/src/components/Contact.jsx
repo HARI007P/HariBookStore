@@ -63,9 +63,28 @@ function Contact() {
                 they reach the right hands, especially students in need. Your
                 small gesture can make a big difference!
               </p>
-              <p className="mb-1">
-                To donate your books, please reach out to us at:
-              </p>
+
+              {/* Highlighted Google Form */}
+              <div className="bg-pink-200 border border-pink-300 rounded-xl p-4 shadow-md flex items-center gap-4 hover:shadow-lg transition duration-300">
+                <img
+                  src="https://www.gstatic.com/images/branding/product/1x/forms_48dp.png"
+                  alt="Google Form"
+                  className="w-12 h-12 rounded-full"
+                />
+                <div>
+                  <p className="text-gray-700 font-medium">Fill out our</p>
+                  <a
+                    href="https://forms.gle/Pw5qNhYAxmVhUhsx5"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-pink-600 font-bold text-lg hover:underline"
+                  >
+                    📑 Book Donation Form
+                  </a>
+                </div>
+              </div>
+
+              <p className="mt-4 mb-1">You can also reach us directly at:</p>
               <div className="flex items-center gap-2 mt-2">
                 📧{" "}
                 <a
