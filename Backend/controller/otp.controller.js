@@ -1,17 +1,18 @@
 // Backend/controller/otp.controller.js
 import User from "../models/user.model.js";
 import nodemailer from "nodemailer";
-import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 
-dotenv.config();
+// ✅ Hardcode your Gmail & App Password here (testing only!)
+const EMAIL_USER = "hari07102004p@gmail.com";
+const EMAIL_PASS = "vrfselkrhtshhcua"; // remove spaces, exactly 16 chars
 
 // Nodemailer transporter
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: EMAIL_USER,
+    pass: EMAIL_PASS,
   },
 });
 
@@ -38,7 +39,7 @@ export const sendOTP = async (req, res) => {
     );
 
     await transporter.sendMail({
-      from: `"Bookstore OTP" <${process.env.EMAIL_USER}>`,
+      from: `"Bookstore OTP" <${EMAIL_USER}>`,
       to: email,
       subject: "Your OTP Code",
       html: `
@@ -54,7 +55,7 @@ export const sendOTP = async (req, res) => {
 
     res.status(200).json({ success: true, message: "OTP sent successfully" });
   } catch (err) {
-    console.error("Send OTP Error:", err);
+    console.error("❌ Send OTP Error:", err);
     res.status(500).json({ success: false, message: "Failed to send OTP" });
   }
 };
@@ -101,7 +102,7 @@ export const verifyOTP = async (req, res) => {
       user: { id: user._id, email: user.email, fullname: user.fullname },
     });
   } catch (err) {
-    console.error("Verify OTP Error:", err);
+    console.error("❌ Verify OTP Error:", err);
     res.status(500).json({ success: false, message: "Verification failed" });
   }
 };
