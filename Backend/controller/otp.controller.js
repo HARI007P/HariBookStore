@@ -3,9 +3,9 @@ import User from "../models/user.model.js";
 import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
 
-// ✅ Hardcode your Gmail & App Password here (testing only!)
+// ✅ Hardcode Gmail & App Password (⚠️ only for testing, not production)
 const EMAIL_USER = "hari07102004p@gmail.com";
-const EMAIL_PASS = "vrfselkrhtshhcua"; // remove spaces, exactly 16 chars
+const EMAIL_PASS = "vrfselkrhtshhcua"; // exactly 16 chars
 
 // Nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -17,14 +17,17 @@ const transporter = nodemailer.createTransport({
 });
 
 // Generate 6-digit OTP
-const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
+const generateOTP = () =>
+  Math.floor(100000 + Math.random() * 900000).toString();
 
 // ✅ Send OTP
 export const sendOTP = async (req, res) => {
   const { email, fullname } = req.body;
 
   if (!email || !fullname) {
-    return res.status(400).json({ success: false, message: "Email & fullname required" });
+    return res
+      .status(400)
+      .json({ success: false, message: "Email & fullname required" });
   }
 
   const otp = generateOTP();
@@ -60,37 +63,41 @@ export const sendOTP = async (req, res) => {
   }
 };
 
-// ✅ Verify OTP
+// ✅ Verify OTP (Only OTP, no password)
 export const verifyOTP = async (req, res) => {
-  const { email, otp, fullname, password } = req.body;
+  const { email, otp } = req.body;
 
-  if (!email || !otp || !password) {
-    return res.status(400).json({ success: false, message: "Email, OTP & password required" });
+  if (!email || !otp) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Email & OTP required" });
   }
 
   try {
     const user = await User.findOne({ email });
 
     if (!user || !user.otp) {
-      return res.status(400).json({ success: false, message: "User not found or OTP missing" });
+      return res
+        .status(400)
+        .json({ success: false, message: "User not found or OTP missing" });
     }
 
     if (user.otpExpiresAt < Date.now()) {
-      return res.status(400).json({ success: false, message: "OTP expired" });
+      return res
+        .status(400)
+        .json({ success: false, message: "OTP expired" });
     }
 
     // ✅ Compare OTP with hash
     const isMatch = await bcrypt.compare(otp, user.otp);
     if (!isMatch) {
-      return res.status(400).json({ success: false, message: "Invalid OTP" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid OTP" });
     }
 
-    // ✅ Hash password before saving
-    const hashedPassword = await bcrypt.hash(password, 10);
-
+    // ✅ Mark user as verified
     user.verified = true;
-    user.fullname = fullname || user.fullname;
-    user.password = hashedPassword;
     user.otp = undefined;
     user.otpExpiresAt = undefined;
 
@@ -98,7 +105,7 @@ export const verifyOTP = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "OTP verified & user registered",
+      message: "OTP verified successfully",
       user: { id: user._id, email: user.email, fullname: user.fullname },
     });
   } catch (err) {
