@@ -40,9 +40,9 @@ function Contact() {
         </p>
 
         {/* Main Content */}
-        <div className="grid grid-cols-2 md:grid-cols-2 gap-20 items-start ">
-          {/* Image */}
-          <div className="flex hover:scale-105 transition-transform duration-300 items-right ">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
+          {/* Image - hidden on mobile, visible only on large screens */}
+          <div className="hidden lg:flex hover:scale-105 transition-transform duration-300 items-right">
             <img
               src={contactImage}
               alt="Contact Illustration"
