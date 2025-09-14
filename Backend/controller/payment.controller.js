@@ -5,10 +5,15 @@ import User from "../models/user.model.js";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 
-// Email configuration
-const EMAIL_USER = "hari07102004p@gmail.com";
-const EMAIL_PASS = "vrfselkrhtshhcua";
+// Email configuration using environment variables
+const EMAIL_USER = process.env.EMAIL_USER;
+const EMAIL_PASS = process.env.EMAIL_PASS;
 const ADMIN_EMAIL = "payment.haribookstore1@gmail.com"; // Payment notification email
+
+// Validate email configuration
+if (!EMAIL_USER || !EMAIL_PASS) {
+  console.error("❌ Email configuration missing! Please check EMAIL_USER and EMAIL_PASS in .env file");
+}
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -16,6 +21,8 @@ const transporter = nodemailer.createTransport({
     user: EMAIL_USER,
     pass: EMAIL_PASS,
   },
+  debug: true, // Enable debug mode for better error tracking
+  logger: true // Enable logging
 });
 
 // Create new order/payment
@@ -283,6 +290,11 @@ export const updateOrderStatus = async (req, res) => {
 // Email Functions
 async function sendAdminOrderNotification(order) {
   try {
+    console.log(`📧 Sending admin notification for order: ${order._id}`);
+    
+    // Verify transporter before sending
+    await transporter.verify();
+    console.log('✅ Email transporter verified for admin notification');
     const emailContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 8px; color: white; text-align: center;">
@@ -317,19 +329,36 @@ async function sendAdminOrderNotification(order) {
       </div>
     `;
 
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: `"HariBookStore Orders" <${EMAIL_USER}>`,
       to: ADMIN_EMAIL, // Send to payment admin email
       subject: `🛒 New Order: ${order.bookDetails.bookName} - ${order._id}`,
       html: emailContent
     });
+    
+    console.log(`✅ Admin notification sent successfully for order: ${order._id}`, {
+      messageId: info.messageId,
+      response: info.response
+    });
   } catch (error) {
-    console.error("Admin email error:", error);
+    console.error(`❌ Admin email error for order ${order._id}:`, error);
+    
+    // Provide specific error messages
+    if (error.code === 'EAUTH') {
+      console.error('❌ Email authentication failed. Check Gmail app password.');
+    } else if (error.code === 'ECONNECTION') {
+      console.error('❌ Unable to connect to email server.');
+    }
   }
 }
 
 async function sendCustomerOrderConfirmation(order) {
   try {
+    console.log(`📧 Sending customer confirmation for order: ${order._id} to ${order.customerEmail}`);
+    
+    // Verify transporter
+    await transporter.verify();
+    console.log('✅ Email transporter verified for customer confirmation');
     const emailContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 8px; color: white; text-align: center;">
@@ -365,19 +394,34 @@ async function sendCustomerOrderConfirmation(order) {
       </div>
     `;
 
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: `"HariBookStore" <${EMAIL_USER}>`,
       to: order.customerEmail,
       subject: `📚 Order Received: ${order.bookDetails.bookName} - Order #${order._id}`,
       html: emailContent
     });
+    
+    console.log(`✅ Customer confirmation sent successfully for order: ${order._id}`, {
+      messageId: info.messageId,
+      to: order.customerEmail
+    });
   } catch (error) {
-    console.error("Customer confirmation email error:", error);
+    console.error(`❌ Customer confirmation email error for order ${order._id}:`, error);
+    
+    if (error.code === 'EAUTH') {
+      console.error('❌ Email authentication failed. Check Gmail app password.');
+    } else if (error.code === 'ECONNECTION') {
+      console.error('❌ Unable to connect to email server.');
+    }
   }
 }
 
 async function sendOrderConfirmedEmail(order) {
   try {
+    console.log(`📧 Sending order confirmation for order: ${order._id}`);
+    
+    // Verify transporter
+    await transporter.verify();
     const emailContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); padding: 20px; border-radius: 8px; color: white; text-align: center;">
@@ -420,19 +464,30 @@ async function sendOrderConfirmedEmail(order) {
       </div>
     `;
 
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: `"HariBookStore" <${EMAIL_USER}>`,
       to: order.customerEmail,
       subject: `✅ Order Confirmed: ${order.bookDetails.bookName} - Delivery in 3 days!`,
       html: emailContent
     });
+    
+    console.log(`✅ Order confirmation sent successfully for order: ${order._id}`, {
+      messageId: info.messageId,
+      to: order.customerEmail
+    });
   } catch (error) {
-    console.error("Order confirmed email error:", error);
+    console.error(`❌ Order confirmation email error for order ${order._id}:`, error);
+    
+    if (error.code === 'EAUTH') {
+      console.error('❌ Email authentication failed. Check Gmail app password.');
+    }
   }
 }
 
 async function sendOrderCancelledEmail(order) {
   try {
+    console.log(`📧 Sending order cancellation for order: ${order._id}`);
+    await transporter.verify();
     const emailContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="background: #ef4444; padding: 20px; border-radius: 8px; color: white; text-align: center;">
@@ -471,19 +526,27 @@ async function sendOrderCancelledEmail(order) {
       </div>
     `;
 
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: `"HariBookStore" <${EMAIL_USER}>`,
       to: order.customerEmail,
       subject: `❌ Order Cancelled: ${order.bookDetails.bookName} - Payment Issue`,
       html: emailContent
     });
+    
+    console.log(`✅ Order cancellation sent successfully for order: ${order._id}`);
   } catch (error) {
-    console.error("Order cancelled email error:", error);
+    console.error(`❌ Order cancellation email error for order ${order._id}:`, error);
+    
+    if (error.code === 'EAUTH') {
+      console.error('❌ Email authentication failed. Check Gmail app password.');
+    }
   }
 }
 
 async function sendOrderStatusUpdateEmail(order) {
   try {
+    console.log(`📧 Sending status update for order: ${order._id} - Status: ${order.orderStatus}`);
+    
     let statusMessage = '';
     let bgColor = '';
     let emoji = '';
@@ -539,13 +602,25 @@ async function sendOrderStatusUpdateEmail(order) {
       </div>
     `;
 
-    await transporter.sendMail({
+    // Verify transporter before sending
+    await transporter.verify();
+    
+    const info = await transporter.sendMail({
       from: `"HariBookStore" <${EMAIL_USER}>`,
       to: order.customerEmail,
       subject: `${emoji} Order Update: ${order.bookDetails.bookName} - ${statusMessage}`,
       html: emailContent
     });
+    
+    console.log(`✅ Status update sent successfully for order: ${order._id}`, {
+      status: order.orderStatus,
+      to: order.customerEmail
+    });
   } catch (error) {
-    console.error("Status update email error:", error);
+    console.error(`❌ Status update email error for order ${order._id}:`, error);
+    
+    if (error.code === 'EAUTH') {
+      console.error('❌ Email authentication failed. Check Gmail app password.');
+    }
   }
 }
