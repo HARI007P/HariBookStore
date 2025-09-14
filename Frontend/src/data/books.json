@@ -1,0 +1,402 @@
+[
+  {
+    "id": 1,
+    "name": "Bhagavad Gita",
+    "price": 1,
+    "donar": "Mr.harry",
+    "bookcode": "HBS001",
+    "category": "Sold Out",
+    "image": "https://imgs.search.brave.com/ZOloSM6qPp9Ciha34_4T5Bx7IUKftP1fR3OaG_9awZM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL0kv/NTFQajJONzIteUwu/anBn",
+    "description": "The Bhagavad Gita, one of the most revered texts of Indian philosophy, is a timeless dialogue between Lord Krishna and the warrior prince Arjuna on the battlefield of Kurukshetra. More than just a religious scripture, it is a profound spiritual guide that addresses the eternal questions of life, duty, morality, and the pursuit of truth. Through its eighteen chapters, the Gita explores concepts such as dharma (righteous duty), karma (the law of action and consequence), bhakti (devotion), and jnana (knowledge). It inspires readers to rise above confusion, self-doubt, and despair by embracing wisdom and selfless action. Universally respected, it has influenced philosophers, leaders, and thinkers around the world for centuries. The Gita remains a guiding light for anyone seeking clarity in times of uncertainty and strength in the face of moral dilemmas."
+  },
+  {
+    "id": 2,
+    "name": "A Journey Through Time",
+    "price": 1,
+    "donar": "Mr.Rajesh",
+    "bookcode": "HBS002",
+    "category": "Sale",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdbqrX8lYq9q4nHdIzw8RYuRsGmsHFn6TNerSZScQuuQ&s",
+    "description": "An insightful book that explores the mysteries of time, history, and human understanding through science and storytelling. It blends engaging narratives with scientific discoveries, offering readers a fascinating journey through different eras, civilizations, and the evolution of human knowledge. Perfect for those who are curious about both history and the future, it inspires reflection on how time shapes our lives."
+  },
+  {
+    "id": 3,
+    "name": "MURUGA - The Lord of War",
+    "price": 1,
+    "donar": "Mr.Suresh",
+    "bookcode": "HBS003",
+    "category": "Sale",
+    "image": "https://imgs.search.brave.com/M7fwsq-vowVTP_ASRXAP-0wUHtlHVr9oCNCqgxmH5yg/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9nYXJ1/ZGFsaWZlLmluL2Nh/Y2hlL2xhcmdlL3By/b2R1Y3QvODM0NzYv/V0lTRE9NLTMuanBl/Zw",
+    "description": "A spiritual and cultural exploration of Lord Muruga, revered as the God of War and Victory in Hindu tradition. This book delves into his divine legends, symbolism, and significance in guiding devotees towards courage, wisdom, and devotion."
+  },
+  {
+    "id": 4,
+    "name": "Rich Dad Poor Dad",
+    "price": 1,
+    "donar": "Mr.Srinu",
+    "bookcode": "HBS004",
+    "category": "Sale",
+    "image": "https://bookspringindia.in/cdn/shop/products/81BE7eeKzAL._AC_UF1000_1000_QL80_FMwebp_540x.webp?v=1679329477",
+    "description": "Rich Dad Poor Dad by Robert T. Kiyosaki is a personal finance classic that challenges conventional views on money and success. The book contrasts the financial philosophies of the author's two father figures: his own well-educated but financially struggling father ('Poor Dad') and his best friend's wealthy, business-savvy father ('Rich Dad'). Through practical lessons and real-life stories, it teaches the importance of financial literacy, investing, building assets, and thinking differently about money. It has inspired millions worldwide to pursue financial independence."
+  },
+  {
+    "id": 5,
+    "name": "Deep Work",
+    "price": 1,
+    "donar": "Mr.Hemanth",
+    "bookcode": "HBS005",
+    "category": "Sale",
+    "image": "https://bookspringindia.in/cdn/shop/products/61TkOFwquPL._AC_UF1000_1000_QL80_FMwebp_1024x1024@2x.webp?v=1679330796",
+    "description": "Deep Work by Cal Newport is a powerful guide on how to focus without distraction in a world full of interruptions. It emphasizes the importance of cultivating deep, meaningful concentration to achieve extraordinary productivity and success. Newport provides practical strategies to eliminate shallow work and maximize your mental capacity for high-value tasks."
+  },
+  {
+    "id": 6,
+    "name": "Mindset",
+    "price": 1,
+    "donar": "Mr.Raju",
+    "bookcode": "HBS006",
+    "category": "Sale",
+    "image": "https://bookspringindia.in/cdn/shop/products/mindset_360x.jpg?v=1626259428",
+    "description": "Mindset by Carol S. Dweck explores the power of having a growth mindset versus a fixed mindset. It reveals how our beliefs about our abilities shape our success in education, work, sports, and relationships. The book teaches readers how adopting a growth mindset can unlock potential, inspire resilience, and transform the way we approach challenges."
+  },
+  {
+    "id": 7,
+    "name": "Attitude Is Everything",
+    "price": 1,
+    "donar": "Mr.Nani",
+    "bookcode": "HBS007",
+    "category": "Sale",
+    "image": "https://bookspringindia.in/cdn/shop/products/710jnzKlDTL._AC_UF1000_1000_QL80_FMwebp_180x.webp?v=1679329775",
+    "description": "Jeff Keller's 'Attitude Is Everything' shows how a positive mindset can change your life. The book explains that success is not just about skills, but about attitude, self-belief, and taking action. With practical lessons and motivational stories, it inspires readers to stay positive, overcome challenges, and achieve their goals."
+  },
+  {
+    "id": 8,
+    "name": "Start With Why",
+    "price": 1,
+    "donar": "Mr.Avinash",
+    "bookcode": "HBS008",
+    "category": "Sale",
+    "image": "https://bookspringindia.in/cdn/shop/products/startwithwhy_360x.jpg?v=1626260960",
+    "description": "'Start With Why' by Simon Sinek explores how great leaders and organizations inspire action by focusing on purpose before anything else. Instead of asking 'what' or 'how', they start with 'why'. The book shares real-world examples of leaders who created loyal followers and built lasting success by leading with vision and clarity."
+  },
+  {
+    "id": 9,
+    "name": "The Intelligent Investor",
+    "price": 1,
+    "donar": "Mr.Naresh",
+    "bookcode": "HBS009",
+    "category": "Sale",
+    "image": "https://bookspringindia.in/cdn/shop/products/theintelligentinvestor_1024x1024@2x.png?v=1626262579",
+    "description": "A classic guide to investing by Benjamin Graham, focusing on long-term strategies, value investing, and principles that help investors minimize risk and build wealth steadily."
+  },
+  {
+    "id": 10,
+    "name": "Love, Theoretically",
+    "price": 1,
+    "donar": "Mr.Avinash",
+    "bookcode": "HBS010",
+    "category": "Sale",
+    "image": "https://bookspringindia.in/cdn/shop/files/81BDsUxiG_L._AC_UF1000_1000_QL80_FMwebp_180x.webp?v=1688138085",
+    "description": "A contemporary romance novel by Ali Hazelwood that combines love, humor, and academia, exploring the life of a theoretical physicist who unexpectedly finds herself entangled in a complicated romance."
+  },
+  {
+    "id": 11,
+    "name": "The Midnight Library",
+    "price": 1,
+    "donar": "Mr.AbhyaRAm",
+    "bookcode": "HBS011",
+    "category": "Sale",
+    "image": "https://bookspringindia.in/cdn/shop/products/Bookspring_360x.jpg?v=1645290463",
+    "description": "A thought-provoking novel by Matt Haig about choices, regrets, and parallel lives. It follows Nora Seed as she explores infinite possibilities in a magical library between life and death."
+  },
+  {
+    "id": 12,
+    "name": "Twisted Love",
+    "price": 1,
+    "donar": "Mr.BhargavRam",
+    "bookcode": "HBS012",
+    "category": "Sale",
+    "image": "https://bookspringindia.in/cdn/shop/products/71JmNtanZOL._AC_UF1000_1000_QL80_FMwebp_1024x1024@2x.webp?v=1679329712",
+    "description": "A dark romance novel by Ana Huang, part of the Twisted series. It tells the story of a cold, ruthless man and the woman who melts his walls, blending passion, secrets, and emotional intensity."
+  },
+  {
+    "id": 13,
+    "name": "The Personal MBA",
+    "price": 1,
+    "donar": "Mr.Tarak",
+    "bookcode": "HBS013",
+    "category": "Sale",
+    "image": "https://bookspringindia.in/cdn/shop/products/71IWc_F7yeL._AC_UF1000_1000_QL80_FMwebp_180x.webp?v=1679330873",
+    "description": "Written by Josh Kaufman, this book condenses essential business knowledge into simple concepts. It covers marketing, finance, strategy, and productivity—helping readers gain MBA-level insights without formal education."
+  },
+  {
+    "id": 14,
+    "name": "It Starts With Us",
+    "price": 1,
+    "donar": "Mr.Prabhu",
+    "bookcode": "HBS014",
+    "category": "Sale",
+    "image": "https://bookspringindia.in/cdn/shop/products/81FummIc2eL._AC_UF1000_1000_QL80_FMwebp_1024x1024@2x.webp?v=1679328941",
+    "description": "The sequel to Colleen Hoover's bestselling 'It Ends With Us'. It continues Lily and Atlas's journey, exploring themes of love, healing, and second chances while overcoming past struggles."
+  },
+  {
+    "id": 15,
+    "name": "Haunting Adeline",
+    "price": 1,
+    "donar": "Mr.Yuvaraj",
+    "bookcode": "HBS015",
+    "category": "Sale",
+    "image": "https://bookspringindia.in/cdn/shop/products/71QSecJ64LL._AC_UF1000_1000_QL80_FMwebp_1024x1024@2x.webp?v=1679329403",
+    "description": "A dark, suspenseful romance by H.D. Carlton. It follows Adeline, a writer who becomes entangled in a dangerous game of obsession, secrets, and forbidden love, blurring the line between fear and desire."
+  },
+  {
+    "id": 16,
+    "name": "Elon Musk",
+    "price": 1,
+    "donar": "Mr.Uma Mahesh",
+    "bookcode": "HBS016",
+    "category": "Sale",
+    "image": "https://bookspringindia.in/cdn/shop/products/elonmusk_1024x1024@2x.png?v=1626257251",
+    "description": "A biography by Ashlee Vance that explores the extraordinary life of Elon Musk, covering his ventures in Tesla, SpaceX, and SolarCity, and his mission to push the boundaries of technology and innovation."
+  },
+  {
+    "id": 17,
+    "name": "Love and Other Words",
+    "price": 1,
+    "donar": "Mr.Revanth",
+    "bookcode": "HBS017",
+    "category": "Sale",
+    "image": "https://bookspringindia.in/cdn/shop/products/Loveandotherwords_BooksTech_1080x_b219768a-337f-4384-827d-1427cf0803d3_1024x1024@2x.jpg?v=1681885611",
+    "description": "A touching romance novel by Christina Lauren about childhood friends turned lovers, exploring themes of love, loss, and second chances through a dual-timeline narrative."
+  },
+  {
+    "id": 18,
+    "name": "Things We Never Got Over",
+    "price": 1,
+    "donar": "Mr.Praneeth",
+    "bookcode": "HBS018",
+    "category": "Sale",
+    "image": "https://bookspringindia.in/cdn/shop/products/619qA4KTwcL._AC_UF1000_1000_QL80_FMwebp_1024x1024@2x.webp?v=1679332806",
+    "description": "A small-town romance by Lucy Score, featuring a runaway bride, a grumpy hero, and a story full of drama, healing, and unexpected love."
+  },
+  {
+    "id": 19,
+    "name": "The Boys In The Boat",
+    "price": 1,
+    "donar": "Mr.Srinu",
+    "bookcode": "HBS019",
+    "category": "Sale",
+    "image": "https://bookspringindia.in/cdn/shop/files/81gk2vbFLvL._AC_UF1000_1000_QL80_FMwebp_1024x1024@2x.webp?v=1704405963",
+    "description": "Daniel James Brown's inspiring true story of the American rowing team that triumphed at the 1936 Berlin Olympics, showcasing resilience, teamwork, and the pursuit of excellence."
+  },
+  {
+    "id": 20,
+    "name": "The Happiest Man on Earth",
+    "price": 1,
+    "donar": "Mr.Rajesh",
+    "bookcode": "HBS020",
+    "category": "Sale",
+    "image": "https://bookspringindia.in/cdn/shop/files/819yNwOnMUL._AC_UF1000_1000_QL80_FMwebp_1024x1024@2x.webp?v=1694371173",
+    "description": "Holocaust survivor Eddie Jaku shares his incredible life story, teaching lessons of hope, kindness, and resilience while proving that happiness can be found even in the darkest times."
+  },
+  {
+    "id": 21,
+    "name": "The Automatic Millionaire",
+    "price": 1,
+    "donar": "Mr.Hari",
+    "bookcode": "HBS021",
+    "category": "Sale",
+    "image": "https://bookspringindia.in/cdn/shop/files/81_Euu67GXL._AC_UF1000_1000_QL80_FMwebp_1024x1024@2x.webp?v=1701717863",
+    "description": "David Bach's bestselling personal finance book reveals how ordinary people can achieve financial freedom by automating savings and investments. It introduces the 'Latte Factor,' demonstrating how small daily expenses can grow into significant wealth when invested wisely. With practical strategies, Bach shows readers how to pay themselves first, secure their future, and build wealth effortlessly over time."
+  },
+  {
+    "id": 22,
+    "name": "The Will of the Many",
+    "price": 1,
+    "donar": "Mr.Avinash",
+    "bookcode": "HBS022",
+    "category": "Sale",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1670363463i/58416952.jpg",
+    "description": "James Islington's epic fantasy introduces readers to a world ruled by the Hierarchy, where obedience is enforced through mystical powers. The story follows Vis, a student caught between survival and rebellion, as he navigates dangerous politics, hidden agendas, and ancient mysteries. With intricate world-building and powerful themes of loyalty and resistance, it's the first in a thrilling new series."
+  },
+  {
+    "id": 23,
+    "name": "Empire of Silence",
+    "price": 1,
+    "donar": "Mr.Karthik",
+    "bookcode": "HBS023",
+    "category": "Sale",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1523897945i/36454667.jpg",
+    "description": "Christopher Ruocchio's science fantasy epic follows Hadrian Marlowe, a man destined to destroy a sun and wipe out an alien race. Told in a reflective narrative, the novel blends space opera and high fantasy as Hadrian recounts his life of rebellion, exile, and unintended greatness. Rich in politics, philosophy, and interstellar intrigue, it's a tale of destiny, sacrifice, and power."
+  },
+  {
+    "id": 24,
+    "name": "The Hunger of the Gods",
+    "price": 1,
+    "donar": "Mr.Seetharam",
+    "bookcode": "HBS024",
+    "category": "Sale",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1639404608i/57341045.jpg",
+    "description": "John Gwynne's second book in the 'Bloodsworn Saga' continues the Norse-inspired epic where gods walk the earth and vengeance fuels battles. The story follows Orka, Varg, and Elvar as their paths intertwine amid war, betrayal, and divine wrath. Packed with visceral combat, emotional stakes, and a richly woven world, it's a brutal yet deeply human fantasy about family, loyalty, and survival."
+  },
+  {
+    "id": 25,
+    "name": "Of Blood and Fire",
+    "price": 1,
+    "donar": "Mr.Akash",
+    "bookcode": "HBS025",
+    "category": "Sale",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1611043983i/56750401.jpg",
+    "description": "Ryan Cahill's debut fantasy novel begins 'The Bound and the Broken' series with a tale of prophecy, ancient powers, and reluctant heroes. In a land where dragons and magic were thought long gone, a young man discovers his destiny during an invasion that changes his world. Epic in scope and fast-paced in action, it's a story of courage, friendship, and the rebirth of legends."
+  },
+  {
+    "id": 26,
+    "name": "Animals Make Us Human",
+    "price": 1,
+    "donar": "Mr.Ramesh",
+    "bookcode": "HBS026",
+    "category": "Sale",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1348264535i/4386485.jpg",
+    "description": "Temple Grandin explores how animals think, feel, and behave, offering insights into creating better environments for pets, farm animals, and wildlife. Drawing on her expertise in animal science and her personal perspective as someone with autism, Grandin explains how to ensure animals live healthier, happier lives. It's both a guide for animal lovers and a powerful reflection on empathy and care."
+  },
+  {
+    "id": 27,
+    "name": "Shutter Island",
+    "price": 1,
+    "donar": "Mr.Rajesh",
+    "bookcode": "HBS027",
+    "category": "Sale",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1329269081i/21686.jpg",
+    "description": "Dennis Lehane's psychological thriller follows U.S. Marshal Teddy Daniels as he investigates the disappearance of a patient from Ashecliffe Hospital, a psychiatric facility on Shutter Island. As Teddy delves deeper, shocking secrets and mind-bending twists unravel, blurring the line between reality and delusion. Dark, atmospheric, and suspenseful, the story keeps readers questioning until the final page."
+  },
+  {
+    "id": 28,
+    "name": "No Exit",
+    "price": 1,
+    "donar": "Mr.Vikram",
+    "bookcode": "HBS028",
+    "category": "Sale",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1498539883i/35522836.jpg",
+    "description": "Taylor Adams delivers a tense, claustrophobic thriller set in a snowbound rest stop where college student Darby Thorne discovers a kidnapped child locked in a van. Trapped with strangers—one of whom is the kidnapper—Darby must outwit and outlast her opponent in a desperate fight for survival. Fast-paced and chilling, the novel is filled with shocking twists and relentless suspense."
+  },
+  {
+    "id": 29,
+    "name": "The Elephant Tree",
+    "price": 1,
+    "donar": "Mr.Raghu",
+    "bookcode": "HBS029",
+    "category": "Sale",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1327248026i/9293020.jpg",
+    "description": "Mark Fallon is an overworked detective investigating a spate of attacks at a string of high profile city centre nightclubs. Scott is a dejected 24 year old struggling to make ends meet working for his brother and supplementing his income with a small-scale drug dealing operation. Angela is an attractive 23 year old, raised by her father, a career criminal and small time drug dealer who supplies Scott with cannabis. This is a chilling tale spanning a few months in the lives of Scott and Angela, where realizations about the present combine with shocking revelations from the past leading to an apocalyptic climax where they no longer know whom they can trust."
+  },
+  {
+    "id": 30,
+    "name": "Never Lie",
+    "price": 1,
+    "donar": "Mr.Sumanth",
+    "bookcode": "HBS030",
+    "category": "Sale",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1661428846i/62080187.jpg",
+    "description": "Freida McFadden's twisty psychological thriller follows newlyweds Tricia and Ethan, who get stranded at a remote estate once owned by a famous psychiatrist. As a snowstorm traps them inside, they discover chilling secrets hidden within the mansion's walls. With lies, betrayal, and shocking revelations, the novel keeps readers on edge until its jaw-dropping finale."
+  },
+  {
+    "id": 31,
+    "name": "Love, Mom",
+    "price": 1,
+    "donar": "Mr.Mani",
+    "bookcode": "HBS031",
+    "category": "Sale",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1729890029i/220838350.jpg",
+    "description": "A moving collection of heartfelt letters and reflections written by mothers to their children. 'Love, Mom' captures the joys, fears, wisdom, and unconditional love that define motherhood. Each story is deeply personal, offering readers comfort, inspiration, and a reminder of the powerful bond between mothers and children."
+  },
+  {
+    "id": 32,
+    "name": "The Crash",
+    "price": 1,
+    "donar": "Mr.Santosh",
+    "bookcode": "HBS032",
+    "category": "Sale",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1720712855i/216223604.jpg",
+    "description": "A gripping contemporary thriller that explores the aftermath of a devastating plane crash. As survivors grapple with trauma, guilt, and shocking revelations, hidden truths come to light that change everything they thought they knew. 'The Crash' is a tense and emotional page-turner about resilience, survival, and the fragility of life."
+  },
+  {
+    "id": 33,
+    "name": "The White Tiger",
+    "price": 1,
+    "donar": "Mr.Karthik",
+    "bookcode": "HBS033",
+    "category": "Sale",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1710937569i/1768603.jpg",
+    "description": "Aravind Adiga's Man Booker Prize–winning novel follows Balram Halwai, a poor villager who becomes a successful entrepreneur in modern India. Told in a darkly comic and brutally honest voice, the novel exposes corruption, class struggles, and the harsh realities of India's economic divide. Both satirical and thought-provoking, it's a tale of ambition and survival."
+  },
+  {
+    "id": 34,
+    "name": "The Palace of Illusions",
+    "price": 1,
+    "donar": "Mr.Akash",
+    "bookcode": "HBS034",
+    "category": "Sale",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1679444666i/1774836.jpg",
+    "description": "Chitra Banerjee Divakaruni reimagines the Indian epic Mahabharata from the perspective of Draupadi, the fiery and complex heroine. Narrated in her voice, the novel explores love, duty, destiny, and power while shining light on the struggles and desires of women often left out of history. A lyrical and empowering retelling of an ancient tale."
+  },
+  {
+    "id": 35,
+    "name": "Sita: Warrior of Mithila",
+    "price": 1,
+    "donar": "Mr.Bhanu",
+    "bookcode": "HBS035",
+    "category": "Sale",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1493895603i/34680719.jpg",
+    "description": "Amish Tripathi presents a bold retelling of Sita's story, portraying her not just as a symbol of virtue but as a fierce warrior and leader. This second book in the Ram Chandra series combines mythology, fantasy, and philosophy, reimagining the Ramayana with Sita as its central, powerful figure. A thrilling and inspirational epic."
+  },
+  {
+    "id": 36,
+    "name": "Chanakya's Chant",
+    "price": 1,
+    "donar": "Mr.Srinu",
+    "bookcode": "HBS036",
+    "category": "Sale",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1327939570i/10098912.jpg",
+    "description": "Ashwin Sanghi masterfully blends history and modern politics in this gripping novel. Moving between ancient India, where Chanakya rises as a master strategist, and the present day, where a political genius uses his principles to shape power, the story highlights intrigue, ambition, and the timeless relevance of Chanakya's wisdom."
+  },
+  {
+    "id": 37,
+    "name": "The 3 Mistakes of My Life",
+    "price": 1,
+    "donar": "Mr.Hemanth",
+    "bookcode": "HBS037",
+    "category": "Sale",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1216107646i/3320520.jpg",
+    "description": "Chetan Bhagat's bestselling novel follows three friends in Ahmedabad chasing their dreams of business, love, and cricket. Through their journey, they encounter ambition, heartbreak, politics, and tragedy. A tale of friendship, aspirations, and the mistakes that shape destiny, it resonates deeply with India's youth."
+  },
+  {
+    "id": 38,
+    "name": "Wings of Fire",
+    "price": 1,
+    "donar": "Mr.Hari",
+    "bookcode": "HBS038",
+    "category": "Sale",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1588286863i/634583.jpg",
+    "description": "An inspiring autobiography of Dr. A.P.J. Abdul Kalam, India's Missile Man and former President. The book traces his journey from humble beginnings in Rameswaram to becoming a leading scientist and visionary leader. Filled with life lessons, resilience, and determination, it is a story of how dreams can be turned into reality."
+  },
+  {
+    "id": 39,
+    "name": "Einstein: His Life and Universe",
+    "price": 1,
+    "donar": "Mr.Avinash",
+    "bookcode": "HBS039",
+    "category": "Sale",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1328011405i/10884.jpg",
+    "description": "Walter Isaacson's definitive biography of Albert Einstein offers a fascinating portrait of the genius who reshaped our understanding of the universe. Based on newly released personal letters, the book explores both his scientific brilliance and his complex personal life, revealing the humanity behind the legend."
+  },
+  {
+    "id": 40,
+    "name": "The Audacity of Hope",
+    "price": 1,
+    "donar": "Mr.Rajesh",
+    "bookcode": "HBS040",
+    "category": "Sale",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1386925614i/9742.jpg",
+    "description": "Written by Barack Obama before his presidency, this book offers his vision for America's future. Blending personal anecdotes with political philosophy, Obama discusses values, democracy, and the challenges facing the nation. 'The Audacity of Hope' is both thoughtful and inspiring, reflecting the optimism and ideals that defined his leadership."
+  }
+]
