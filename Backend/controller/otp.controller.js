@@ -4,9 +4,9 @@ import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-// ✅ Hardcode Gmail & App Password (⚠️ only for testing, not production)
-const EMAIL_USER = "hari07102004p@gmail.com";
-const EMAIL_PASS = "vrfselkrhtshhcua"; // exactly 16 chars
+// ✅ Use environment variables for email credentials
+const EMAIL_USER = process.env.EMAIL_USER;
+const EMAIL_PASS = process.env.EMAIL_PASS;
 
 // Nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -15,6 +15,8 @@ const transporter = nodemailer.createTransport({
     user: EMAIL_USER,
     pass: EMAIL_PASS,
   },
+  debug: true, // Enable debug mode
+  logger: true // Enable logging
 });
 
 // Generate 6-digit OTP
@@ -29,6 +31,14 @@ export const sendOTP = async (req, res) => {
     return res
       .status(400)
       .json({ success: false, message: "Email, fullname, and password are required" });
+  }
+  
+  // Validate email configuration
+  if (!EMAIL_USER || !EMAIL_PASS) {
+    console.error("❌ Email configuration missing! Please check EMAIL_USER and EMAIL_PASS in .env file");
+    return res
+      .status(500)
+      .json({ success: false, message: "Email service is not configured properly" });
   }
 
   // Check if user already exists and is verified
@@ -45,6 +55,9 @@ export const sendOTP = async (req, res) => {
   const otpExpiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
 
   try {
+    // Update user data in database
+    console.log(`📧 Attempting to send OTP to: ${email}`);
+    
     await User.findOneAndUpdate(
       { email },
       { 
@@ -56,8 +69,15 @@ export const sendOTP = async (req, res) => {
       },
       { upsert: true, new: true }
     );
+    
+    console.log(`💾 User data updated for: ${email}`);
 
-    await transporter.sendMail({
+    // Verify transporter configuration
+    await transporter.verify();
+    console.log(`✅ Email transporter verified successfully`);
+
+    // Send OTP email
+    const info = await transporter.sendMail({
       from: `"HariBookStore OTP" <${EMAIL_USER}>`,
       to: email,
       subject: "🔐 Your Account Verification Code - HariBookStore",
@@ -88,11 +108,32 @@ export const sendOTP = async (req, res) => {
         </div>
       `,
     });
+    
+    console.log(`✅ Email sent successfully to: ${email}`, {
+      messageId: info.messageId,
+      response: info.response
+    });
 
     res.status(200).json({ success: true, message: "OTP sent successfully" });
   } catch (err) {
     console.error("❌ Send OTP Error:", err);
-    res.status(500).json({ success: false, message: "Failed to send OTP" });
+    
+    // Provide more specific error messages
+    let errorMessage = "Failed to send OTP";
+    
+    if (err.code === 'EAUTH') {
+      errorMessage = "Email authentication failed. Please check your Gmail app password.";
+    } else if (err.code === 'ECONNECTION') {
+      errorMessage = "Unable to connect to email server. Please check your internet connection.";
+    } else if (err.responseCode === 535) {
+      errorMessage = "Invalid email credentials. Please verify your Gmail app password.";
+    }
+    
+    res.status(500).json({ 
+      success: false, 
+      message: errorMessage,
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
   }
 };
 

@@ -443,7 +443,7 @@ function Signup() {
                         </>
                       ) : (
                         <>
-                          Send Verification Code
+                          submit
                           <FaArrowRight className="transition-transform group-hover:translate-x-1" />
                         </>
                       )}
@@ -547,7 +547,7 @@ function Signup() {
                         transition={{ delay: 0.5 }}
                         whileHover={otp.join("").length === 6 ? { scale: 1.02, boxShadow: "0 10px 30px rgba(236, 72, 153, 0.3)" } : {}}
                         whileTap={otp.join("").length === 6 ? { scale: 0.98 } : {}}
-                        animate={success ? { scale: [1, 1.1, 1], backgroundColor: "#22c55e" } : {}}
+                        
                         type="button"
                         onClick={handleOTPVerification}
                         disabled={loading || otp.join("").length < 6}

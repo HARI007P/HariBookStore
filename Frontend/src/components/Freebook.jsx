@@ -4,29 +4,31 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import Cards from "./Cards";
 import { Link } from "react-router-dom";
-import { booksAPI } from "../services/api";
+import booksData from "../data/books.json";
 
 function Freebook() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // Fetch books from API
+  // Load books from local JSON
   useEffect(() => {
-    const fetchBooks = async () => {
+    const loadBooks = () => {
       try {
         setLoading(true);
-        const response = await booksAPI.getAll();
-        setBooks(response);
-        setError(null);
+        // Simulate a small delay to show loading state
+        setTimeout(() => {
+          setBooks(booksData);
+          setError(null);
+          setLoading(false);
+        }, 300);
       } catch (err) {
-        console.error('Error fetching books:', err);
+        console.error('Error loading books:', err);
         setError('Failed to load books. Please try again later.');
-      } finally {
         setLoading(false);
       }
     };
 
-    fetchBooks();
+    loadBooks();
   }, []);
 
   const settings = {
