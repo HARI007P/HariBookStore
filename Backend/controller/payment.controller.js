@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 
 // Email configuration
 const EMAIL_USER = "hari07102004p@gmail.com";
-const EMAIL_PASS = "vrfselkrhtshhcua";
+const EMAIL_PASS = "zlxtyfzidmfffslk";
 const ADMIN_EMAIL = "payment.haribookstore1@gmail.com"; // Payment notification email
 
 const transporter = nodemailer.createTransport({
