@@ -32,7 +32,8 @@ app.use(cors({
     "http://localhost:3000", // React default port
     "http://localhost:5173", // Vite default port
     "http://localhost:5174", // Vite alternate port
-    "https://haribookstore-backend.onrender.com" // Production frontend
+    "https://haribookstore-1.onrender.com", // Production frontend
+    "https://haribookstore-backend.onrender.com" // Backend URL for testing
   ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
