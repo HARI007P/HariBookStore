@@ -7,20 +7,20 @@ function Contact() {
   return (
     <>
       <Navbar />
-      
-      <div className="container mx-auto px-6 md:px- py-10 pt-24">
+
+      <div className="container mx-auto px-6 md:px-10 py-10 pt-24">
         {/* Page Heading */}
-        <h1 className="text-3xl font-bold mb-6">
+        <h1 className="text-3xl font-bold mb-8 text-center ">
           Contact Us <span className="text-pink-500">Here! :</span>
         </h1>
-        <p className="text-2xl mb-1 font-semibold">
+        <p className="text-2xl mb-6 font-semibold text-center md:text-left">
           Have questions or feedback? Reach out to us!
         </p>
 
         {/* Main Content */}
-        <div className="grid grid-cols-2 md:grid-cols-2 gap-20 items-start ">
-          {/* Image */}
-          <div className="flex hover:scale-105 transition-transform duration-300 items-right ">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-start">
+          {/* Image - hidden on mobile */}
+          <div className="hidden md:flex hover:scale-105 transition-transform duration-300 items-center justify-center">
             <img
               src={contactImage}
               alt="Contact Illustration"
@@ -29,9 +29,9 @@ function Contact() {
           </div>
 
           {/* Contact Info */}
-          <div className="space-y-1">
+          <div className="space-y-6 flex flex-col justify-start">
             {/* Book Donation */}
-            <div>
+            <div className="text-center md:text-left">
               <h2 className="text-xl font-semibold mb-2">
                 Donate Your Used Books
               </h2>
@@ -43,7 +43,7 @@ function Contact() {
               </p>
 
               {/* Highlighted Google Form */}
-              <div className="bg-pink-200 border border-pink-300 rounded-xl p-4 shadow-md flex items-center gap-4 hover:shadow-lg transition duration-300">
+              <div className="bg-pink-200 border border-pink-300 rounded-xl p-4 shadow-md flex items-center gap-4 justify-center md:justify-start hover:shadow-lg transition duration-300">
                 <img
                   src="https://www.gstatic.com/images/branding/product/1x/forms_48dp.png"
                   alt="Google Form"
@@ -63,7 +63,7 @@ function Contact() {
               </div>
 
               <p className="mt-4 mb-1">You can also reach us directly at:</p>
-              <div className="flex items-center gap-2 mt-2">
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-2 mt-2">
                 📧{" "}
                 <a
                   href="mailto:donate.books@gmail.com"
@@ -72,7 +72,7 @@ function Contact() {
                   donate.books@gmail.com
                 </a>
               </div>
-              <div className="flex items-center gap-2 mt-2">
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-2 mt-2">
                 📞{" "}
                 <a
                   href="tel:+917416219267"
@@ -84,14 +84,14 @@ function Contact() {
             </div>
 
             {/* Customer Support */}
-            <div>
+            <div className="text-center md:text-left">
               <h2 className="text-xl font-semibold mb-2">Customer Support</h2>
               <p>
                 If you have any questions regarding your orders, returns, or
                 general inquiries, feel free to contact our customer support
                 team.
               </p>
-              <div className="mt-4 flex items-center gap-2">
+              <div className="mt-4 flex flex-col md:flex-row items-center md:items-start gap-2">
                 📧{" "}
                 <a
                   href="mailto:Hari.07p@gmail.com"
@@ -100,7 +100,7 @@ function Contact() {
                   Hari.07p@gmail.com
                 </a>
               </div>
-              <div className="mt-2 flex items-center gap-2">
+              <div className="mt-2 flex flex-col md:flex-row items-center md:items-start gap-2">
                 📞{" "}
                 <a
                   href="tel:+917416219267"
@@ -112,7 +112,7 @@ function Contact() {
             </div>
 
             {/* Business Inquiries */}
-            <div>
+            <div className="text-center md:text-left">
               <h2 className="text-xl font-semibold mb-2">
                 Business Inquiries
               </h2>
@@ -120,7 +120,7 @@ function Contact() {
                 For business-related inquiries, partnerships, or collaborations,
                 please get in touch with our business development team.
               </p>
-              <div className="mt-4 flex items-center gap-2">
+              <div className="mt-4 flex flex-col md:flex-row items-center md:items-start gap-2">
                 📧{" "}
                 <a
                   href="mailto:bussiness.hari07p@gmail.com"
@@ -129,7 +129,7 @@ function Contact() {
                   bussiness.hari07p@gmail.com
                 </a>
               </div>
-              <div className="mt-2 flex items-center gap-2">
+              <div className="mt-2 flex flex-col md:flex-row items-center md:items-start gap-2">
                 📞{" "}
                 <a
                   href="tel:+916305219267"

@@ -7,34 +7,34 @@ export default function AuthProvider({ children }) {
   const [authUser, setAuthUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Initialize user from localStorage on app load
   useEffect(() => {
-    // Check if user is authenticated on app start
-    const initializeAuth = () => {
-      try {
-        const token = localStorage.getItem("authToken");
-        const userData = localStorage.getItem("user");
-        
-        if (token && userData) {
-          const user = JSON.parse(userData);
-          setAuthUser(user);
-        }
-      } catch (error) {
-        console.error("Error initializing auth:", error);
-        // Clear invalid data
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("user");
-      } finally {
-        setLoading(false);
-      }
-    };
+    try {
+      const token = localStorage.getItem("authToken");
+      const userData = localStorage.getItem("user");
 
-    initializeAuth();
+      if (token && userData) {
+        setAuthUser(JSON.parse(userData));
+      }
+    } catch (error) {
+      console.error("Error initializing auth:", error);
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("user");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
+  // Login function
   const login = async (credentials) => {
     try {
       const response = await userService.login(credentials);
+
       if (response.success) {
+        // Save to localStorage
+        localStorage.setItem("authToken", response.token);
+        localStorage.setItem("user", JSON.stringify(response.user));
+
         setAuthUser(response.user);
         return { success: true, user: response.user };
       } else {
@@ -42,17 +42,23 @@ export default function AuthProvider({ children }) {
       }
     } catch (error) {
       console.error("Login error:", error);
-      return { 
-        success: false, 
-        message: error.response?.data?.message || "Login failed" 
+      return {
+        success: false,
+        message: error.response?.data?.message || "Login failed",
       };
     }
   };
 
+  // Signup function
   const signup = async (userData) => {
     try {
       const response = await userService.signup(userData);
+
       if (response.success) {
+        // Save to localStorage
+        localStorage.setItem("authToken", response.token);
+        localStorage.setItem("user", JSON.stringify(response.user));
+
         setAuthUser(response.user);
         return { success: true, user: response.user };
       } else {
@@ -60,20 +66,25 @@ export default function AuthProvider({ children }) {
       }
     } catch (error) {
       console.error("Signup error:", error);
-      return { 
-        success: false, 
-        message: error.response?.data?.message || "Signup failed" 
+      return {
+        success: false,
+        message: error.response?.data?.message || "Signup failed",
       };
     }
   };
 
+  // Logout function
   const logout = () => {
     userService.logout();
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
     setAuthUser(null);
   };
 
+  // Check if user is authenticated
   const isAuthenticated = () => {
-    return userService.isAuthenticated() && authUser !== null;
+    const token = localStorage.getItem("authToken");
+    return !!token && authUser !== null;
   };
 
   const value = {
@@ -83,20 +94,21 @@ export default function AuthProvider({ children }) {
     signup,
     logout,
     isAuthenticated,
-    setAuthUser
+    setAuthUser,
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 }
 
+// Hook to use Auth
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

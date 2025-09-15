@@ -11,7 +11,7 @@ function About() {
       
       {/* Main Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-20 py-12">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-10 mt-10 text-white text-center md:text-left">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-10 mt-10 text-white text-center ">
           About <span className="text-pink-500">Us</span>
         </h1>
 

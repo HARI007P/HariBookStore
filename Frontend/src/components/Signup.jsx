@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import Confetti from "react-confetti";
-import { otpService } from "../services/api";
+import { otpService } from "../services/api"; 
 import { useAuth } from "../context/AuthProvider";
 import { FaEye, FaEyeSlash, FaEnvelope, FaLock, FaUser, FaArrowRight } from "react-icons/fa";
 
