@@ -37,6 +37,7 @@ if (!fs.existsSync(uploadsDir)) {
 app.use(cors({
   origin: [
     "http://localhost:3000", // React default port
+    "http://localhost:3001", // Vite alternate port
     "http://localhost:5173", // Vite default port
     "http://localhost:5174", // Vite alternate port
     "https://haribookstore-1.onrender.com", // Old frontend URL

@@ -1,14 +1,15 @@
 // src/services/api.js
 import axios from "axios";
 
+// -------------------- AXIOS INSTANCE --------------------
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "https://haribookstore-backend.onrender.com", // Uses your backend API with fallback
+  baseURL: import.meta.env.VITE_API_URL, // uses .env variable
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Add token to requests if available
+// ✅ Automatically attach token for all requests
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("authToken");
@@ -17,153 +18,136 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Book API functions
+// -------------------- BOOK API --------------------
 export const bookService = {
-  // Get all books
   getAllBooks: async () => {
     try {
-      const response = await api.get("/book");
+      const response = await api.get("/api/book");
       return response.data;
     } catch (error) {
-      console.error("Error fetching books:", error);
+      console.error("📚 getAllBooks error:", error);
       throw error;
     }
   },
 
-  // Get books by category
   getBooksByCategory: async (category) => {
     try {
-      const response = await api.get(`/book?category=${category}`);
+      const response = await api.get(`/api/book?category=${category}`);
       return response.data;
     } catch (error) {
-      console.error(`Error fetching books for category ${category}:`, error);
+      console.error("📚 getBooksByCategory error:", error);
       throw error;
     }
-  }
+  },
 };
 
-// Export books API for easier imports
 export const booksAPI = {
   getAll: bookService.getAllBooks,
-  getByCategory: bookService.getBooksByCategory
+  getByCategory: bookService.getBooksByCategory,
 };
 
-// User API functions
+// -------------------- USER API --------------------
 export const userService = {
-  // User signup
   signup: async (userData) => {
     try {
-      const response = await api.post("/user/signup", userData);
+      const response = await api.post("/api/user/signup", userData);
       if (response.data.success && response.data.token) {
         localStorage.setItem("authToken", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
       }
       return response.data;
     } catch (error) {
-      console.error("Error during signup:", error);
+      console.error("👤 signup error:", error);
       throw error;
     }
   },
 
-  // User login
   login: async (credentials) => {
     try {
-      const response = await api.post("/user/login", credentials);
+      const response = await api.post("/api/user/login", credentials);
       if (response.data.success && response.data.token) {
         localStorage.setItem("authToken", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
       }
       return response.data;
     } catch (error) {
-      console.error("Error during login:", error);
+      console.error("👤 login error:", error);
       throw error;
     }
   },
 
-  // User logout
   logout: () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("user");
   },
 
-  // Get current user from localStorage
   getCurrentUser: () => {
     const user = localStorage.getItem("user");
     return user ? JSON.parse(user) : null;
   },
 
-  // Check if user is authenticated
-  isAuthenticated: () => {
-    return !!localStorage.getItem("authToken");
-  }
+  isAuthenticated: () => !!localStorage.getItem("authToken"),
 };
 
-// OTP API functions for Signup
+// -------------------- OTP API --------------------
 export const otpService = {
-  // Send OTP for Signup (includes fullname, email, password)
   sendSignupOTP: async (signupData) => {
     try {
-      const response = await api.post("/otp/send", signupData);
+      const response = await api.post("/api/otp/send", signupData);
       return response.data;
     } catch (error) {
-      console.error("Error sending signup OTP:", error);
+      console.error("🔑 sendSignupOTP error:", error);
       throw error;
     }
   },
 
-  // Verify OTP and Complete Signup
   verifySignupOTP: async (otpData) => {
     try {
-      const response = await api.post("/otp/verify", otpData);
+      const response = await api.post("/api/otp/verify", otpData);
       if (response.data.success && response.data.token) {
         localStorage.setItem("authToken", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
       }
       return response.data;
     } catch (error) {
-      console.error("Error verifying OTP:", error);
+      console.error("🔑 verifySignupOTP error:", error);
       throw error;
     }
-  }
+  },
 };
 
-// Payment API functions
+// -------------------- PAYMENT API --------------------
 export const paymentService = {
-  // Process payment
   processPayment: async (paymentData) => {
     try {
-      const response = await api.post("/payment", paymentData);
+      const response = await api.post("/api/payment", paymentData);
       return response.data;
     } catch (error) {
-      console.error("Error processing payment:", error);
+      console.error("💳 processPayment error:", error);
       throw error;
     }
   },
 
-  // Get payment history
   getPaymentHistory: async () => {
     try {
-      const response = await api.get("/payment/orders");
+      const response = await api.get("/api/payment/orders");
       return response.data;
     } catch (error) {
-      console.error("Error fetching payment history:", error);
+      console.error("💳 getPaymentHistory error:", error);
       throw error;
     }
   },
 
-  // Get single order
   getOrder: async (orderId) => {
     try {
-      const response = await api.get(`/payment/order/${orderId}`);
+      const response = await api.get(`/api/payment/order/${orderId}`);
       return response.data;
     } catch (error) {
-      console.error("Error fetching order:", error);
+      console.error("💳 getOrder error:", error);
       throw error;
     }
-  }
+  },
 };
