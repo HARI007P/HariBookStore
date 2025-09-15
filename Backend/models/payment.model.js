@@ -98,7 +98,6 @@ paymentSchema.virtual('fullAddress').get(function() {
 });
 
 // Index for faster queries
-paymentSchema.index({ 'payment.utr': 1 });
 paymentSchema.index({ 'bookDetails.bookCode': 1 });
 paymentSchema.index({ orderStatus: 1 });
 paymentSchema.index({ createdAt: -1 });

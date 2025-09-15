@@ -1,18 +1,25 @@
 // Backend/index.js
+import dotenv from "dotenv";
+import path from "path";
+// Load environment variables FIRST before other imports
+const envResult = dotenv.config();
+console.log("🔍 Dotenv result:", envResult);
+console.log("🔍 Current working directory:", process.cwd());
+console.log("🔍 Environment variables loaded:");
+console.log("PORT:", process.env.PORT);
+console.log("EMAIL_USER:", process.env.EMAIL_USER ? 'LOADED' : 'NOT LOADED');
+console.log("EMAIL_PASS:", process.env.EMAIL_PASS ? 'LOADED' : 'NOT LOADED');
+
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import path from "path";
 import fs from "fs";
-import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 
 import userRoutes from "./route/user.route.js";
 import bookRoutes from "./route/book.route.js";
 import paymentRoutes from "./route/payment.route.js";
 import otpRoutes from "./route/otp.route.js";
-
-dotenv.config();
 
 const app = express();
 

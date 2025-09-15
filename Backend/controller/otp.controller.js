@@ -4,20 +4,18 @@ import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-// ✅ Use environment variables for email credentials
-const EMAIL_USER = process.env.EMAIL_USER;
-const EMAIL_PASS = process.env.EMAIL_PASS;
-
-// Nodemailer transporter
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: EMAIL_USER,
-    pass: EMAIL_PASS,
-  },
-  debug: true, // Enable debug mode
-  logger: true // Enable logging
-});
+// Create email transporter (lazy initialization)
+function getEmailTransporter() {
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+    debug: true, // Enable debug mode
+    logger: true // Enable logging
+  });
+}
 
 // Generate 6-digit OTP
 const generateOTP = () =>
@@ -25,40 +23,47 @@ const generateOTP = () =>
 
 // ✅ Send OTP for Signup
 export const sendOTP = async (req, res) => {
+  console.log(`📨 OTP request received:`, { email: req.body.email, fullname: req.body.fullname });
+  
   const { email, fullname, password } = req.body;
 
   if (!email || !fullname || !password) {
+    console.log(`❌ Missing required fields`);
     return res
       .status(400)
       .json({ success: false, message: "Email, fullname, and password are required" });
   }
   
   // Validate email configuration
-  if (!EMAIL_USER || !EMAIL_PASS) {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
     console.error("❌ Email configuration missing! Please check EMAIL_USER and EMAIL_PASS in .env file");
     return res
       .status(500)
       .json({ success: false, message: "Email service is not configured properly" });
   }
 
-  // Check if user already exists and is verified
-  const existingUser = await User.findOne({ email });
-  if (existingUser && existingUser.verified) {
-    return res
-      .status(400)
-      .json({ success: false, message: "User already exists. Please login instead." });
-  }
-
-  const otp = generateOTP();
-  const otpHash = await bcrypt.hash(otp, 10);
-  const passwordHash = await bcrypt.hash(password, 10);
-  const otpExpiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
-
   try {
+    // Check if user already exists and is verified
+    console.log(`🔍 Checking existing user for: ${email}`);
+    const existingUser = await User.findOne({ email });
+    console.log(`👤 Existing user found:`, existingUser ? 'YES' : 'NO');
+    if (existingUser && existingUser.verified) {
+      console.log(`⚠️ User already verified: ${email}`);
+      return res
+        .status(400)
+        .json({ success: false, message: "User already exists. Please login instead." });
+    }
+
+    const otp = generateOTP();
+    const otpHash = await bcrypt.hash(otp, 10);
+    const passwordHash = await bcrypt.hash(password, 10);
+    const otpExpiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
+
     // Update user data in database
     console.log(`📧 Attempting to send OTP to: ${email}`);
+    console.log(`🔑 Generated OTP: ${otp}`);
     
-    await User.findOneAndUpdate(
+    const updatedUser = await User.findOneAndUpdate(
       { email },
       { 
         fullname, 
@@ -71,14 +76,16 @@ export const sendOTP = async (req, res) => {
     );
     
     console.log(`💾 User data updated for: ${email}`);
+    console.log(`📋 Updated user ID: ${updatedUser._id}`);
 
-    // Verify transporter configuration
-    await transporter.verify();
+    // Get and verify transporter configuration
+    const emailTransporter = getEmailTransporter();
+    await emailTransporter.verify();
     console.log(`✅ Email transporter verified successfully`);
 
     // Send OTP email
-    const info = await transporter.sendMail({
-      from: `"HariBookStore OTP" <${EMAIL_USER}>`,
+    const info = await emailTransporter.sendMail({
+      from: `"HariBookStore OTP" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: "🔐 Your Account Verification Code - HariBookStore",
       html: `
@@ -115,6 +122,7 @@ export const sendOTP = async (req, res) => {
     });
 
     res.status(200).json({ success: true, message: "OTP sent successfully" });
+    
   } catch (err) {
     console.error("❌ Send OTP Error:", err);
     

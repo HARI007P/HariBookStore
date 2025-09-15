@@ -3,17 +3,16 @@ import Payment from "../models/payment.model.js";
 import nodemailer from "nodemailer";
 import cron from "node-cron";
 
-// Email configuration
-const EMAIL_USER = "hari07102004p@gmail.com";
-const EMAIL_PASS = "vrfselkrhtshhcua";
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: EMAIL_USER,
-    pass: EMAIL_PASS,
-  },
-});
+// Create email transporter (lazy initialization)
+function getEmailTransporter() {
+  return nodemailer.createTransporter({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+}
 
 // Function to check and send emails for orders that are 2+ hours old
 export const checkAndSendEmails = async () => {
@@ -119,8 +118,9 @@ async function sendOrderConfirmedEmail(order) {
       </div>
     `;
 
-    await transporter.sendMail({
-      from: `"HariBookStore 📚" <${EMAIL_USER}>`,
+    const emailTransporter = getEmailTransporter();
+    await emailTransporter.sendMail({
+      from: `"HariBookStore 📚" <${process.env.EMAIL_USER}>`,
       to: order.customerEmail,
       subject: `🎉 Order Confirmed: ${order.bookDetails.bookName} - Delivery in 3 days!`,
       html: emailContent
@@ -190,8 +190,9 @@ async function sendOrderCancelledEmail(order) {
       </div>
     `;
 
-    await transporter.sendMail({
-      from: `"HariBookStore 📚" <${EMAIL_USER}>`,
+    const emailTransporter = getEmailTransporter();
+    await emailTransporter.sendMail({
+      from: `"HariBookStore 📚" <${process.env.EMAIL_USER}>`,
       to: order.customerEmail,
       subject: `❌ Order Cancelled: ${order.bookDetails.bookName} - Payment Issue`,
       html: emailContent

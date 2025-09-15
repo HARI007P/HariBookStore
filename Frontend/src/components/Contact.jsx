@@ -1,7 +1,6 @@
 import React from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { Link } from "react-router-dom";
 import contactImage from "../assets/bookchild.png";
 
 function Contact() {
@@ -10,30 +9,6 @@ function Contact() {
       <Navbar />
       
       <div className="container mx-auto px-6 md:px- py-10 pt-24">
-        {/* Back Button */}
-        <div className="mb-8">
-          <Link
-            to="/"
-            className="inline-flex items-center bg-pink-500 text-white font-bold px-5 py-2 rounded-full shadow-md hover:bg-pink-600 transition duration-300"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="2"
-              stroke="currentColor"
-              className="w-5 h-5 mr-2"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-            Back to Home
-          </Link>
-        </div>
-
         {/* Page Heading */}
         <h1 className="text-3xl font-bold mb-6">
           Contact Us <span className="text-pink-500">Here! :</span>

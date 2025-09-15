@@ -5,25 +5,27 @@ import User from "../models/user.model.js";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 
-// Email configuration using environment variables
-const EMAIL_USER = process.env.EMAIL_USER;
-const EMAIL_PASS = process.env.EMAIL_PASS;
 const ADMIN_EMAIL = "payment.haribookstore1@gmail.com"; // Payment notification email
 
-// Validate email configuration
-if (!EMAIL_USER || !EMAIL_PASS) {
-  console.error("❌ Email configuration missing! Please check EMAIL_USER and EMAIL_PASS in .env file");
+// Function to get email transporter (created when needed)
+function getEmailTransporter() {
+  const EMAIL_USER = process.env.EMAIL_USER;
+  const EMAIL_PASS = process.env.EMAIL_PASS;
+  
+  if (!EMAIL_USER || !EMAIL_PASS) {
+    throw new Error("Email configuration missing! Please check EMAIL_USER and EMAIL_PASS in .env file");
+  }
+  
+  return nodemailer.createTransporter({
+    service: "gmail",
+    auth: {
+      user: EMAIL_USER,
+      pass: EMAIL_PASS,
+    },
+    debug: true, // Enable debug mode for better error tracking
+    logger: true // Enable logging
+  });
 }
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: EMAIL_USER,
-    pass: EMAIL_PASS,
-  },
-  debug: true, // Enable debug mode for better error tracking
-  logger: true // Enable logging
-});
 
 // Create new order/payment
 export const createOrder = async (req, res) => {
@@ -292,7 +294,8 @@ async function sendAdminOrderNotification(order) {
   try {
     console.log(`📧 Sending admin notification for order: ${order._id}`);
     
-    // Verify transporter before sending
+    // Get transporter and verify before sending
+    const transporter = getEmailTransporter();
     await transporter.verify();
     console.log('✅ Email transporter verified for admin notification');
     const emailContent = `
@@ -330,9 +333,9 @@ async function sendAdminOrderNotification(order) {
     `;
 
     const info = await transporter.sendMail({
-      from: `"HariBookStore Orders" <${EMAIL_USER}>`,
+      from: `"HariBookStore Orders" <${process.env.EMAIL_USER}>`,
       to: ADMIN_EMAIL, // Send to payment admin email
-      subject: `🛒 New Order: ${order.bookDetails.bookName} - ${order._id}`,
+      subject: `🛍 New Order: ${order.bookDetails.bookName} - ${order._id}`,
       html: emailContent
     });
     
@@ -356,7 +359,8 @@ async function sendCustomerOrderConfirmation(order) {
   try {
     console.log(`📧 Sending customer confirmation for order: ${order._id} to ${order.customerEmail}`);
     
-    // Verify transporter
+    // Get transporter and verify
+    const transporter = getEmailTransporter();
     await transporter.verify();
     console.log('✅ Email transporter verified for customer confirmation');
     const emailContent = `
@@ -388,14 +392,14 @@ async function sendCustomerOrderConfirmation(order) {
           
           <div style="text-align: center; margin-top: 20px;">
             <p>Thank you for choosing HariBookStore! 📚</p>
-            <p style="color: #666; font-size: 14px;">For any queries, reply to this email or contact us at ${EMAIL_USER}</p>
+            <p style="color: #666; font-size: 14px;">For any queries, reply to this email or contact us at ${process.env.EMAIL_USER}</p>
           </div>
         </div>
       </div>
     `;
 
     const info = await transporter.sendMail({
-      from: `"HariBookStore" <${EMAIL_USER}>`,
+      from: `"HariBookStore" <${process.env.EMAIL_USER}>`,
       to: order.customerEmail,
       subject: `📚 Order Received: ${order.bookDetails.bookName} - Order #${order._id}`,
       html: emailContent
@@ -420,7 +424,8 @@ async function sendOrderConfirmedEmail(order) {
   try {
     console.log(`📧 Sending order confirmation for order: ${order._id}`);
     
-    // Verify transporter
+    // Get transporter and verify
+    const transporter = getEmailTransporter();
     await transporter.verify();
     const emailContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -465,7 +470,7 @@ async function sendOrderConfirmedEmail(order) {
     `;
 
     const info = await transporter.sendMail({
-      from: `"HariBookStore" <${EMAIL_USER}>`,
+      from: `"HariBookStore" <${process.env.EMAIL_USER}>`,
       to: order.customerEmail,
       subject: `✅ Order Confirmed: ${order.bookDetails.bookName} - Delivery in 3 days!`,
       html: emailContent
@@ -487,6 +492,7 @@ async function sendOrderConfirmedEmail(order) {
 async function sendOrderCancelledEmail(order) {
   try {
     console.log(`📧 Sending order cancellation for order: ${order._id}`);
+    const transporter = getEmailTransporter();
     await transporter.verify();
     const emailContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -520,14 +526,14 @@ async function sendOrderCancelledEmail(order) {
           
           <div style="text-align: center; margin-top: 20px;">
             <p>We apologize for any inconvenience.</p>
-            <p style="color: #666; font-size: 14px;">For assistance, reply to this email or contact us at ${EMAIL_USER}</p>
+            <p style="color: #666; font-size: 14px;">For assistance, reply to this email or contact us at ${process.env.EMAIL_USER}</p>
           </div>
         </div>
       </div>
     `;
 
     const info = await transporter.sendMail({
-      from: `"HariBookStore" <${EMAIL_USER}>`,
+      from: `"HariBookStore" <${process.env.EMAIL_USER}>`,
       to: order.customerEmail,
       subject: `❌ Order Cancelled: ${order.bookDetails.bookName} - Payment Issue`,
       html: emailContent
@@ -602,11 +608,12 @@ async function sendOrderStatusUpdateEmail(order) {
       </div>
     `;
 
-    // Verify transporter before sending
-    await transporter.verify();
+    // Get transporter and verify
+    const emailTransporter = getEmailTransporter();
+    await emailTransporter.verify();
     
-    const info = await transporter.sendMail({
-      from: `"HariBookStore" <${EMAIL_USER}>`,
+    const info = await emailTransporter.sendMail({
+      from: `"HariBookStore" <${process.env.EMAIL_USER}>`,
       to: order.customerEmail,
       subject: `${emoji} Order Update: ${order.bookDetails.bookName} - ${statusMessage}`,
       html: emailContent

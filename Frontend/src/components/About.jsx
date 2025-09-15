@@ -1,35 +1,14 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import aboutImage from "../assets/book4.png";
 
 function About() {
-  const navigate = useNavigate();
 
   return (
     <>
       <Navbar />
       
-      {/* Back Button */}
-      <div className="pt-24 pl-6">
-        <button
-          onClick={() => navigate("/")}
-          className="flex items-center space-x-2 bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full shadow-lg transition-all duration-300 group"
-        >
-          <svg
-            className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-          <span className="font-semibold">Back to Home</span>
-        </button>
-      </div>
-
       {/* Main Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-20 py-12">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-10 mt-10 text-white text-center md:text-left">
