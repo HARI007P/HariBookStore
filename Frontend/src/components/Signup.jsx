@@ -50,12 +50,7 @@ function Signup() {
     }
     
     // Auto-submit when all 6 digits are entered
-    const completedOtp = [...newOtp];
-    if (completedOtp.every(digit => digit !== "") && completedOtp.join("").length === 6) {
-      setTimeout(() => {
-        handleOTPVerification();
-      }, 500); // Small delay to show completion state
-    }
+  
   };
 
   const handleKeyDown = (e, index) => {
