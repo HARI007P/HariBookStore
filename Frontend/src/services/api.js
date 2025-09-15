@@ -2,7 +2,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "https://haribookstore-1.onrender.com", // Uses your backend API with fallback
+  baseURL: import.meta.env.VITE_API_URL || "https://haribookstore-backend.onrender.com", // Uses your backend API with fallback
   headers: {
     "Content-Type": "application/json",
   },
