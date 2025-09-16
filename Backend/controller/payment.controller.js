@@ -16,7 +16,7 @@ function getEmailTransporter() {
     throw new Error("Email configuration missing! Please check EMAIL_USER and EMAIL_PASS in .env file");
   }
   
-  return nodemailer.createTransporter({
+  return nodemailer.createTransport({
     service: "gmail",
     auth: {
       user: EMAIL_USER,
