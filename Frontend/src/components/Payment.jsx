@@ -1,5 +1,5 @@
 // src/components/Payment.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
@@ -44,7 +44,7 @@ function Payment() {
     }
     if (!bookname || !bookcode) {
       toast.error("Invalid book selection");
-      navigate("/");
+      navigate("/books");
       return;
     }
   }, [authUser, bookname, bookcode, navigate]);
@@ -53,7 +53,7 @@ function Payment() {
   useEffect(() => {
     if (timeLeft <= 0) {
       toast.error("⏱ Payment session expired");
-      navigate("/");
+      navigate("/books");
       return;
     }
     
