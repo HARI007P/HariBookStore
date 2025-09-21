@@ -12,13 +12,7 @@ import paymentRoutes from "./route/payment.route.js";
 import otpRoutes from "./route/otp.route.js";
 
 // Load environment variables
-const envResult = dotenv.config();
-console.log("🔍 Dotenv result:", envResult);
-console.log("🔍 Current working directory:", process.cwd());
-console.log("🔍 Environment variables loaded:");
-console.log("PORT:", process.env.PORT);
-console.log("EMAIL_USER:", process.env.EMAIL_USER ? "LOADED" : "NOT LOADED");
-console.log("EMAIL_PASS:", process.env.EMAIL_PASS ? "LOADED" : "NOT LOADED");
+dotenv.config();
 
 const app = express();
 
@@ -45,16 +39,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(uploadsDir));
 
-// Routes
+// API Routes
 app.use("/api/user", userRoutes);
 app.use("/api/book", bookRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/otp", otpRoutes);
 
-// Default route
-app.get("/", (req, res) => res.send("📚 HariBookStore API is running"));
+// -------------------- Serve Frontend --------------------
+const frontendPath = path.join(__dirname, "../frontend/dist");
+if (fs.existsSync(frontendPath)) {
+  app.use(express.static(frontendPath));
 
-// MongoDB connection
+  // Catch-all → send index.html (for React Router)
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(frontendPath, "index.html"));
+  });
+} else {
+  console.warn("⚠️ Frontend build not found. Did you run `npm run build` in frontend?");
+}
+
+// -------------------- MongoDB connection --------------------
 const PORT = process.env.PORT || 4000;
 const MONGO_URI = process.env.MONGO_URI;
 
