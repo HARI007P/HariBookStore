@@ -44,7 +44,7 @@ function Payment() {
     }
     if (!bookname || !bookcode) {
       toast.error("Invalid book selection");
-      navigate("/course");
+      navigate("/books");
       return;
     }
   }, [authUser, bookname, bookcode, navigate]);
@@ -53,7 +53,7 @@ function Payment() {
   useEffect(() => {
     if (timeLeft <= 0) {
       toast.error("⏱ Payment session expired");
-      navigate("/course");
+      navigate("/books");
       return;
     }
     
