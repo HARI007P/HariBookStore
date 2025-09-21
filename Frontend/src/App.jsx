@@ -49,7 +49,7 @@ function App() {
       {/* Content Wrapper */}
       <div className="relative z-10">
         {/* Wrap everything inside Router */}
-        <Router>
+        <Router basename={import.meta.env.BASE_URL || "/"}>
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Home />} />
@@ -86,7 +86,7 @@ function App() {
               }
             />
 
-            {/* Fallback Route */}
+            {/* Fallback Route - Redirect unknown URLs to Home */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Router>
