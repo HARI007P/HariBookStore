@@ -75,7 +75,7 @@ function Navbar() {
             />
             <div className="flex flex-col sm:flex-row sm:items-center">
               <span className="text-2xl sm:text-3xl font-bold text-white">
-                Hari's
+                Hari
               </span>
               <span className="text-3xl sm:text-4xl font-bold text-pink-500 sm:ml-1">
                 BookStore
