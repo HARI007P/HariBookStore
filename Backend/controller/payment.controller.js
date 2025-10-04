@@ -17,7 +17,7 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "payment.haribookstore1@gmail.com
 async function sendEmail({ to, subject, html }) {
   try {
     const response = await resend.emails.send({
-      from: "HariBookStore <hari07102004p@gmail.com>",
+      from: "HariBookStore <noreply@haribookstore1.com>",
       to,
       subject,
       html,
@@ -331,7 +331,7 @@ async function sendAdminOrderNotification(order) {
 
     // Send email using Resend
     const { data, error } = await resend.emails.send({
-      from: "HariBookStore <hari07102004p@gmail.com>",
+      from: "HariBookStore <noreply@haribookstore1.com>",
       to: ADMIN_EMAIL,
       subject: `🛍 New Order: ${order.bookDetails.bookName} - ${order._id}`,
       html: emailContent,
@@ -403,7 +403,7 @@ async function sendCustomerOrderConfirmation(order) {
     `;
 
     const { data, error } = await resend.emails.send({
-      from: "HariBookStore <hari07102004p@gmail.com>",
+      from: "HariBookStore <noreply@haribookstore1.com>",
       to: order.customerEmail,
       subject: `📚 Order Received: ${order.bookDetails.bookName} - Order #${order._id}`,
       html: emailContent,
@@ -464,7 +464,7 @@ async function sendOrderConfirmedEmail(order) {
     `;
 
     const { data, error } = await resend.emails.send({
-      from: "HariBookStore <hari07102004p@gmail.com>",
+      from: "HariBookStore <noreply@haribookstore1.com>",
       to: order.customerEmail,
       subject: `✅ Order Confirmed: ${order.bookDetails.bookName} - Delivery in 3 days!`,
       html: emailContent,
@@ -528,7 +528,7 @@ async function sendOrderCancelledEmail(order) {
     `;
 
     const response = await resend.emails.send({
-      from: "HariBookStore <hari07102004p@gmail.com>",
+      from: "HariBookStore <noreply@haribookstore1.com>",
       to: order.customerEmail,
       subject: `❌ Order Cancelled: ${order.bookDetails.bookName} - Payment Issue`,
       html: emailContent,
@@ -607,7 +607,7 @@ async function sendOrderStatusUpdateEmail(order) {
     `;
 
     const response = await resend.emails.send({
-      from: "HariBookStore <hari07102004p@gmail.com>",
+      from: "HariBookStore <noreply@haribookstore1.com>",
       to: order.customerEmail,
       subject: `${emoji} Order Update: ${order.bookDetails.bookName} - ${statusMessage}`,
       html: emailContent,
