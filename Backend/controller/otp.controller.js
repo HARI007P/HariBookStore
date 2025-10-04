@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import { Resend } from "resend";
 
-// ✅ Initialize Resend (uses HTTPS, works on Render)
+// ✅ Initialize Resend
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Generate 6-digit OTP
@@ -66,8 +66,11 @@ export const sendOTP = async (req, res) => {
 
     // ✅ Send OTP using Resend
     try {
+      // Ensure the 'from' email is VERIFIED in Resend dashboard
+      const verifiedSender = process.env.RESEND_VERIFIED_SENDER || "verified_sender@example.com";
+
       const result = await resend.emails.send({
-        from: "HariBookStore <hari07102004p@gmail.com>",
+        from: `HariBookStore <${verifiedSender}>`,
         to: email,
         subject: "🔐 Your OTP Code - HariBookStore",
         html: `
@@ -94,9 +97,11 @@ export const sendOTP = async (req, res) => {
       });
     } catch (err) {
       console.error("❌ Resend email failed:", err);
+      if (err.response) console.error("Response data:", err.response.data);
+
       return res.status(500).json({
         success: false,
-        message: "Failed to send OTP email",
+        message: "Failed to send OTP email. Ensure sender is verified in Resend dashboard.",
         error: err.message,
       });
     }
@@ -105,8 +110,7 @@ export const sendOTP = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to send OTP",
-      error:
-        process.env.NODE_ENV === "development" ? err.message : undefined,
+      error: process.env.NODE_ENV === "development" ? err.message : undefined,
     });
   }
 };
@@ -155,13 +159,10 @@ export const verifyOTP = async (req, res) => {
     user.otpExpiresAt = undefined;
     await user.save();
 
-    const JWT_SECRET =
-      process.env.JWT_SECRET || "haribookstore_default_secret_key_2024";
-    const token = jwt.sign(
-      { id: user._id, email: user.email },
-      JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    const JWT_SECRET = process.env.JWT_SECRET || "haribookstore_default_secret_key_2024";
+    const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
+      expiresIn: "7d",
+    });
 
     res.status(200).json({
       success: true,
