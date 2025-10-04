@@ -123,17 +123,27 @@ export const verifyOTP = async (req, res) => {
   try {
     const user = await User.findOne({ email });
 
-    if (!user || !user.otp) {
-      return res.status(400).json({ success: false, message: "User not found or OTP missing" });
+    if (!user) {
+      return res.status(400).json({ success: false, message: "User not found. Please register first." });
+    }
+
+    if (!user.otp) {
+      return res.status(400).json({ success: false, message: "No OTP found. Please request a new OTP." });
     }
 
     if (user.otpExpiresAt < Date.now()) {
-      return res.status(400).json({ success: false, message: "OTP expired" });
+      return res.status(400).json({ 
+        success: false, 
+        message: "OTP has expired. Please request a new OTP." 
+      });
     }
 
     const isMatch = await bcrypt.compare(otp, user.otp);
     if (!isMatch) {
-      return res.status(400).json({ success: false, message: "Invalid OTP" });
+      return res.status(400).json({ 
+        success: false, 
+        message: "Invalid OTP. Please check your email and try again." 
+      });
     }
 
     // Mark user as verified

@@ -443,7 +443,7 @@ function Signup() {
                         </>
                       ) : (
                         <>
-                          submit
+                          Send OTP
                           <FaArrowRight className="transition-transform group-hover:translate-x-1" />
                         </>
                       )}

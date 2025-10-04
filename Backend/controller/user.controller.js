@@ -14,9 +14,28 @@ export const signup = async (req, res) => {
   try {
     const { fullname, email, password } = req.body;
 
+    // Input validation
+    if (!fullname || !email || !password) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Full name, email, and password are required" 
+      });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Password must be at least 6 characters long" 
+      });
+    }
+
     const existingUser = await User.findOne({ email });
-    if (existingUser)
-      return res.status(400).json({ message: "User already exists" });
+    if (existingUser) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "User already exists. Please login instead." 
+      });
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -24,6 +43,7 @@ export const signup = async (req, res) => {
       fullname,
       email,
       password: hashedPassword,
+      verified: true, // Direct signup should be verified
     });
 
     const token = createToken(newUser._id);
@@ -34,10 +54,18 @@ export const signup = async (req, res) => {
       email: newUser.email,
     };
 
-    res.status(201).json({ success: true, user, token });
+    res.status(201).json({ 
+      success: true, 
+      message: "Account created successfully! Welcome to HariBookStore! 🎉",
+      user, 
+      token 
+    });
   } catch (error) {
     console.error("Signup error:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ 
+      success: false, 
+      message: "Internal server error. Please try again." 
+    });
   }
 };
 
