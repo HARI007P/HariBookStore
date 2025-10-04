@@ -66,8 +66,8 @@ export const sendOTP = async (req, res) => {
 
     // ✅ Send OTP using Resend
     try {
-      // Ensure the 'from' email is VERIFIED in Resend dashboard
-      const verifiedSender = process.env.RESEND_VERIFIED_SENDER || "verified_sender@example.com";
+      // Use verified domain email
+      const verifiedSender = process.env.RESEND_VERIFIED_SENDER || "noreply@haribookstore1.com";
 
       const result = await resend.emails.send({
         from: `HariBookStore <${verifiedSender}>`,
