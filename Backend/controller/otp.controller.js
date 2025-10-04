@@ -67,7 +67,7 @@ export const sendOTP = async (req, res) => {
     // ✅ Send OTP using Resend
     try {
       const result = await resend.emails.send({
-        from: "HariBookStore <no-reply@haribookstore.com>",
+        from: "HariBookStore <hari07102004p@gmail.com>",
         to: email,
         subject: "🔐 Your OTP Code - HariBookStore",
         html: `
