@@ -96,7 +96,7 @@ app.post("/test-otp", (req, res) => {
 // Test email connection endpoint
 app.get("/test-email", async (req, res) => {
   try {
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 465,
       secure: true,
