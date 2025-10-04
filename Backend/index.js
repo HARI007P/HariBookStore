@@ -14,6 +14,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import fs from "fs";
+import nodemailer from "nodemailer";
 import { fileURLToPath } from "url";
 
 import userRoutes from "./route/user.route.js";
@@ -90,6 +91,41 @@ app.post("/test-otp", (req, res) => {
     body: req.body,
     headers: req.headers
   });
+});
+
+// Test email connection endpoint
+app.get("/test-email", async (req, res) => {
+  try {
+    const transporter = nodemailer.createTransporter({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+    
+    console.log('🔍 Testing email connection...');
+    await transporter.verify();
+    
+    res.json({
+      success: true,
+      message: "Email connection successful",
+      config: {
+        user: process.env.EMAIL_USER,
+        passLength: process.env.EMAIL_PASS?.length || 0
+      }
+    });
+  } catch (error) {
+    console.error('❌ Email connection failed:', error);
+    res.status(500).json({
+      success: false,
+      message: "Email connection failed",
+      error: error.message,
+      code: error.code
+    });
+  }
 });
 
 // Config
