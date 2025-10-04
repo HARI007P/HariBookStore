@@ -13,7 +13,7 @@ function Signup() {
   const location = useLocation();
   const navigate = useNavigate();
   const from = location.state?.from?.pathname || "/";
-  const { authUser, setAuthUser, isAuthenticated } = useAuth();
+  const { setAuthUser, isAuthenticated } = useAuth();
 
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const [loading, setLoading] = useState(false);
@@ -28,96 +28,73 @@ function Signup() {
 
   const password = watch("password", "");
 
-  // Timer countdown for OTP
+  // OTP Timer
   useEffect(() => {
     let interval;
     if (step === 2 && timer > 0) {
-      interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
+      interval = setInterval(() => setTimer(prev => prev - 1), 1000);
     }
     return () => clearInterval(interval);
   }, [step, timer]);
 
-  // OTP input handling
+  // OTP Change Handling (auto verification removed)
   const handleOTPChange = (value, index) => {
     if (isNaN(value)) return;
     const newOtp = [...otp];
     newOtp[index] = value.slice(-1);
     setOtp(newOtp);
-    
-    // Move to next input if current is filled
-    if (value && index < 5) {
-      inputRefs.current[index + 1].focus();
-    }
-    
-    // Auto-submit when all 6 digits are entered
-    const completedOtp = [...newOtp];
-    if (completedOtp.every(digit => digit !== "") && completedOtp.join("").length === 6) {
-      setTimeout(() => {
-        handleOTPVerification();
-      }, 500); // Small delay to show completion state
-    }
+
+    if (value && index < 5) inputRefs.current[index + 1].focus();
   };
 
   const handleKeyDown = (e, index) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1].focus();
     }
-    // Submit on Enter key if OTP is complete
-    if (e.key === "Enter" && otp.join("").length === 6) {
-      handleOTPVerification();
-    }
   };
 
-  // Step 1: Send OTP
+  // Send OTP
   const handleSignupFormSubmit = async (data) => {
     try {
       setLoading(true);
       setUserData(data);
-      const response = await otpService.sendSignupOTP({
-        fullname: data.fullname,
-        email: data.email,
-        password: data.password
-      });
-      
+      const response = await otpService.sendSignupOTP(data);
+
       if (response.success) {
-        toast.success("📫 OTP sent to your email! Please check your inbox.");
+        toast.success("📫 OTP sent! Check your inbox.");
         setStep(2);
         setTimer(300); // 5 minutes
       } else {
         toast.error(response.message || "Failed to send OTP");
       }
     } catch (error) {
-      console.error("Signup error:", error);
-      const errorMessage = error.response?.data?.message || "Failed to send OTP. Please try again.";
-      toast.error(errorMessage);
+      const msg = error.response?.data?.message || "Failed to send OTP.";
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
   };
 
-  // Step 2: Verify OTP
+  // Verify OTP
   const handleOTPVerification = async () => {
     try {
       setLoading(true);
       const response = await otpService.verifySignupOTP({
         email: userData.email,
-        otp: otp.join("")
+        otp: otp.join(""),
       });
-      
+
       if (response.success) {
         setSuccess(true);
         setAuthUser(response.user);
-        toast.success(response.message || "Account created successfully! Welcome to HariBookStore 🎉");
-        setTimeout(() => {
-          navigate(from, { replace: true });
-        }, 2000);
+        toast.success(response.message || "Account created successfully!");
+        setTimeout(() => navigate(from, { replace: true }), 2000);
       } else {
-        toast.error(response.message || "Invalid OTP. Please try again.");
+        toast.error(response.message || "Invalid OTP");
       }
     } catch (error) {
-      console.error("OTP verification error:", error);
-      const errorMessage = error.response?.data?.message || "OTP verification failed. Please try again.";
-      toast.error(errorMessage);
+      const msg = error.response?.data?.message || "OTP verification failed.";
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -127,33 +104,26 @@ function Signup() {
   const resendOTP = async () => {
     try {
       setLoading(true);
-      const response = await otpService.sendSignupOTP({
-        fullname: userData.fullname,
-        email: userData.email,
-        password: userData.password
-      });
-      
+      const response = await otpService.sendSignupOTP(userData);
+
       if (response.success) {
-        toast.success("🔄 New OTP sent to your email!");
-        setTimer(300); // Reset timer to 5 minutes
+        toast.success("🔄 OTP resent!");
         setOtp(new Array(6).fill(""));
+        setTimer(300);
       } else {
         toast.error(response.message || "Failed to resend OTP");
       }
-    } catch (error) {
-      console.error("Resend OTP error:", error);
-      toast.error("Failed to resend OTP. Please try again.");
+    } catch {
+      toast.error("Failed to resend OTP. Try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Redirect if already authenticated
   if (isAuthenticated()) {
     navigate(from, { replace: true });
     return null;
   }
-
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-10 relative overflow-hidden">
       {/* Confetti when success */}
