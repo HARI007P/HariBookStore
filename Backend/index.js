@@ -36,16 +36,24 @@ if (!fs.existsSync(uploadsDir)) {
 // Middleware
 app.use(cors({
   origin: [
-   
+    "https://haribookstore1.onrender.com", // Current frontend URL
     "https://haribookstore-1.onrender.com", // Old frontend URL
-    
     "https://haribookstore-backend.onrender.com", // Backend URL for testing
+    "http://localhost:5173", // Local development
+    "http://localhost:3000", // Alternative local development
     /\.onrender\.com$/ // Allow all onrender.com subdomains
   ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`📥 ${new Date().toISOString()} - ${req.method} ${req.path}`);
+  console.log(`📦 Body:`, req.body);
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(uploadsDir));
@@ -59,6 +67,29 @@ app.use("/api/otp", otpRoutes);
 // Default route
 app.get("/", (req, res) => {
   res.send("📚 HariBookStore API is running");
+});
+
+// Health check endpoint
+app.get("/health", (req, res) => {
+  res.json({
+    status: "healthy",
+    timestamp: new Date().toISOString(),
+    database: mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+    environment: {
+      EMAIL_USER: !!process.env.EMAIL_USER,
+      EMAIL_PASS: !!process.env.EMAIL_PASS,
+      MONGO_URI: !!process.env.MONGO_URI
+    }
+  });
+});
+
+// Test OTP endpoint (for debugging)
+app.post("/test-otp", (req, res) => {
+  res.json({
+    message: "Test endpoint reached",
+    body: req.body,
+    headers: req.headers
+  });
 });
 
 // Config

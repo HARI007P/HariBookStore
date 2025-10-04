@@ -3,6 +3,7 @@ import User from "../models/user.model.js";
 import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 // Create email transporter
 function getEmailTransporter() {
@@ -23,21 +24,39 @@ const generateOTP = () =>
 
 // ✅ Send OTP for Signup
 export const sendOTP = async (req, res) => {
-  const { email, fullname, password } = req.body;
+  try {
+    console.log('🔍 OTP Request received:', { email: req.body.email, fullname: req.body.fullname });
+    
+    const { email, fullname, password } = req.body;
 
-  if (!email || !fullname || !password) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Email, fullname, and password are required" });
-  }
+    if (!email || !fullname || !password) {
+      console.log('❌ Missing required fields:', { email: !!email, fullname: !!fullname, password: !!password });
+      return res
+        .status(400)
+        .json({ success: false, message: "Email, fullname, and password are required" });
+    }
+
+  console.log('🔍 Environment check:', {
+    EMAIL_USER: !!process.env.EMAIL_USER,
+    EMAIL_PASS: !!process.env.EMAIL_PASS,
+    MONGO_URI: !!process.env.MONGO_URI
+  });
 
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.log('❌ Email service not configured');
     return res
       .status(500)
       .json({ success: false, message: "Email service not configured properly" });
   }
 
-  try {
+    // Check database connection
+    if (!mongoose.connection.readyState) {
+      console.log('❌ Database not connected');
+      return res.status(500).json({ success: false, message: "Database connection failed" });
+    }
+
+    console.log('✅ Starting OTP process for:', email);
+    
     // Check if user exists
     const existingUser = await User.findOne({ email });
     if (existingUser && existingUser.verified) {
@@ -94,6 +113,7 @@ export const sendOTP = async (req, res) => {
       `,
     });
 
+    console.log('✅ OTP sent successfully to:', email);
     res.status(200).json({ success: true, message: "OTP sent successfully" });
 
   } catch (err) {
@@ -108,6 +128,13 @@ export const sendOTP = async (req, res) => {
       success: false,
       message,
       error: process.env.NODE_ENV === "development" ? err.message : undefined,
+    });
+  } catch (outerErr) {
+    console.error('😨 Outer catch - Critical error in sendOTP:', outerErr);
+    res.status(500).json({
+      success: false,
+      message: "Critical server error",
+      error: process.env.NODE_ENV === "development" ? outerErr.message : "Internal server error"
     });
   }
 };
