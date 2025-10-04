@@ -36,18 +36,18 @@ export const sendOTP = async (req, res) => {
         .json({ success: false, message: "Email, fullname, and password are required" });
     }
 
-  console.log('🔍 Environment check:', {
-    EMAIL_USER: !!process.env.EMAIL_USER,
-    EMAIL_PASS: !!process.env.EMAIL_PASS,
-    MONGO_URI: !!process.env.MONGO_URI
-  });
+    console.log('🔍 Environment check:', {
+      EMAIL_USER: !!process.env.EMAIL_USER,
+      EMAIL_PASS: !!process.env.EMAIL_PASS,
+      MONGO_URI: !!process.env.MONGO_URI
+    });
 
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.log('❌ Email service not configured');
-    return res
-      .status(500)
-      .json({ success: false, message: "Email service not configured properly" });
-  }
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.log('❌ Email service not configured');
+      return res
+        .status(500)
+        .json({ success: false, message: "Email service not configured properly" });
+    }
 
     // Check database connection
     if (!mongoose.connection.readyState) {
@@ -128,13 +128,6 @@ export const sendOTP = async (req, res) => {
       success: false,
       message,
       error: process.env.NODE_ENV === "development" ? err.message : undefined,
-    });
-  } catch (outerErr) {
-    console.error('😨 Outer catch - Critical error in sendOTP:', outerErr);
-    res.status(500).json({
-      success: false,
-      message: "Critical server error",
-      error: process.env.NODE_ENV === "development" ? outerErr.message : "Internal server error"
     });
   }
 };
