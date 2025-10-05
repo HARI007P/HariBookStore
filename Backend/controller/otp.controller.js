@@ -3,10 +3,16 @@ import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
-// ✅ Initialize Resend (uses HTTPS, works on Render)
-const resend = new Resend(process.env.RESEND_API_KEY);
+// ✅ Configure Nodemailer (Gmail + App Password)
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 // Generate 6-digit OTP
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
@@ -15,8 +21,6 @@ const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString()
 export const sendOTP = async (req, res) => {
   try {
     let { email, fullname, password } = req.body;
-
-    // Trim inputs
     email = email?.trim();
     fullname = fullname?.trim();
     password = password?.trim();
@@ -28,7 +32,6 @@ export const sendOTP = async (req, res) => {
       });
     }
 
-    // Check DB connection
     if (mongoose.connection.readyState !== 1) {
       return res.status(500).json({
         success: false,
@@ -36,7 +39,6 @@ export const sendOTP = async (req, res) => {
       });
     }
 
-    // Check if user exists
     const existingUser = await User.findOne({ email });
     if (existingUser && existingUser.verified) {
       return res.status(400).json({
@@ -45,13 +47,12 @@ export const sendOTP = async (req, res) => {
       });
     }
 
-    // Generate OTP and hashes
+    // Generate and hash OTP & password
     const otp = generateOTP();
     const otpHash = await bcrypt.hash(otp, 10);
     const passwordHash = await bcrypt.hash(password, 10);
-    const otpExpiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
+    const otpExpiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 mins
 
-    // Upsert user
     await User.findOneAndUpdate(
       { email },
       {
@@ -64,49 +65,39 @@ export const sendOTP = async (req, res) => {
       { upsert: true, new: true }
     );
 
-    // ✅ Send OTP using Resend
-    try {
-      const result = await resend.emails.send({
-        from: "HariBookStore <no-reply@haribookstore.com>",
-        to: email,
-        subject: "🔐 Your OTP Code - HariBookStore",
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px;">
-            <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center;">
-              <h1>📚 HariBookStore</h1>
-              <h2>Account Verification</h2>
-              <p>Hello <strong>${fullname}</strong>!</p>
-              <p>Use the OTP below to verify your account:</p>
-              <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                <span style="font-size: 32px; font-weight: bold; color: #e91e63; letter-spacing: 4px;">${otp}</span>
-              </div>
-              <p style="color: #999;">⏰ Expires in <strong>5 minutes</strong></p>
-              <p>Need help? Contact us at <strong>customer.haribookstore@gmail.com</strong></p>
-            </div>
+    // ✅ Send email with Nodemailer
+    const mailOptions = {
+      from: `"HariBookStore" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "🔐 Your OTP Code - HariBookStore",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto; padding:20px; background:#f3f3f3; border-radius:10px;">
+          <div style="background:#fff; padding:30px; border-radius:8px; text-align:center;">
+            <h2>📚 Welcome to HariBookStore!</h2>
+            <p>Hello <strong>${fullname}</strong>,</p>
+            <p>Use this OTP to verify your account:</p>
+            <div style="font-size:32px; font-weight:bold; color:#e91e63; margin:20px 0;">${otp}</div>
+            <p>This OTP expires in <strong>5 minutes</strong>.</p>
+            <p>If you didn’t request this, ignore this email.</p>
+            <p>– HariBookStore Team</p>
           </div>
-        `,
-      });
+        </div>
+      `,
+    };
 
-      console.log("✅ OTP sent via Resend:", result);
-      return res.status(200).json({
-        success: true,
-        message: "OTP sent successfully",
-      });
-    } catch (err) {
-      console.error("❌ Resend email failed:", err);
-      return res.status(500).json({
-        success: false,
-        message: "Failed to send OTP email",
-        error: err.message,
-      });
-    }
+    await transporter.sendMail(mailOptions);
+
+    console.log(`✅ OTP sent to ${email}`);
+    return res.status(200).json({
+      success: true,
+      message: "OTP sent successfully to your email",
+    });
   } catch (err) {
     console.error("❌ Send OTP Error:", err);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Failed to send OTP",
-      error:
-        process.env.NODE_ENV === "development" ? err.message : undefined,
+      error: err.message,
     });
   }
 };
@@ -155,17 +146,14 @@ export const verifyOTP = async (req, res) => {
     user.otpExpiresAt = undefined;
     await user.save();
 
-    const JWT_SECRET =
-      process.env.JWT_SECRET || "haribookstore_default_secret_key_2024";
-    const token = jwt.sign(
-      { id: user._id, email: user.email },
-      JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    const JWT_SECRET = process.env.JWT_SECRET || "haribookstore_default_secret";
+    const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
+      expiresIn: "7d",
+    });
 
     res.status(200).json({
       success: true,
-      message: "Account verified successfully! Welcome to HariBookStore 🎉",
+      message: "Account verified successfully!",
       user: {
         _id: user._id,
         email: user.email,

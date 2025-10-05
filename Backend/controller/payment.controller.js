@@ -2,31 +2,29 @@
 import Payment from "../models/payment.model.js";
 import Book from "../models/book.model.js";
 import User from "../models/user.model.js";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-dotenv.config();
-// Payment notification email
+
+const ADMIN_EMAIL = "payment.haribookstore1@gmail.com"; // Payment notification email
 
 // Function to get email transporter (created when needed)
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "payment.haribookstore1@gmail.com";
-
-// Helper function to send email using Resend
-async function sendEmail({ to, subject, html }) {
-  try {
-    const response = await resend.emails.send({
-      from: "HariBookStore <no-reply@haribookstore.com>",
-      to,
-      subject,
-      html,
-    });
-
-    console.log(`✅ Email sent to ${to}: ${response.data?.id || "OK"}`);
-  } catch (error) {
-    console.error(`❌ Email send error to ${to}:`, error.message);
+function getEmailTransporter() {
+  const EMAIL_USER = process.env.EMAIL_USER;
+  const EMAIL_PASS = process.env.EMAIL_PASS;
+  
+  if (!EMAIL_USER || !EMAIL_PASS) {
+    throw new Error("Email configuration missing! Please check EMAIL_USER and EMAIL_PASS in .env file");
   }
+  
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: EMAIL_USER,
+      pass: EMAIL_PASS,
+    },
+    debug: true, // Enable debug mode for better error tracking
+    logger: true // Enable logging
+  });
 }
 
 // Create new order/payment
@@ -290,11 +288,16 @@ export const updateOrderStatus = async (req, res) => {
     });
   }
 };
-// ------------------- Send Admin Order Notification -------------------
+
+// Email Functions
 async function sendAdminOrderNotification(order) {
   try {
     console.log(`📧 Sending admin notification for order: ${order._id}`);
-
+    
+    // Get transporter and verify before sending
+    const transporter = getEmailTransporter();
+    await transporter.verify();
+    console.log('✅ Email transporter verified for admin notification');
     const emailContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 8px; color: white; text-align: center;">
@@ -329,45 +332,40 @@ async function sendAdminOrderNotification(order) {
       </div>
     `;
 
-    // Send email using Resend
-    const { data, error } = await resend.emails.send({
-      from: "HariBookStore <no-reply@haribookstore.com>",
-      to: ADMIN_EMAIL,
+    const info = await transporter.sendMail({
+      from: `"HariBookStore Orders" <${process.env.EMAIL_USER}>`,
+      to: ADMIN_EMAIL, // Send to payment admin email
       subject: `🛍 New Order: ${order.bookDetails.bookName} - ${order._id}`,
-      html: emailContent,
+      html: emailContent
     });
-
-    if (error) {
-      console.error("❌ Failed to send admin email:", error);
-      throw new Error(error.message || "Failed to send admin email");
-    }
-
-    console.log(`✅ Admin notification sent successfully for order: ${order._id}`, data);
-
+    
+    console.log(`✅ Admin notification sent successfully for order: ${order._id}`, {
+      messageId: info.messageId,
+      response: info.response
+    });
   } catch (error) {
-    console.error(`❌ Admin email error for order ${order._id}:`, error.message);
-
-    // More descriptive error handling
-    if (error.message.includes("401")) {
-      console.error("❌ Invalid or expired RESEND_API_KEY. Check your .env file.");
-    } else if (error.message.includes("DNS") || error.message.includes("fetch")) {
-      console.error("❌ Network/DNS issue. Render may be blocking SMTP — Resend should fix it.");
-    } else {
-      console.error("⚠️ Unknown email error:", error);
+    console.error(`❌ Admin email error for order ${order._id}:`, error);
+    
+    // Provide specific error messages
+    if (error.code === 'EAUTH') {
+      console.error('❌ Email authentication failed. Check Gmail app password.');
+    } else if (error.code === 'ECONNECTION') {
+      console.error('❌ Unable to connect to email server.');
     }
   }
 }
 
-
-// ✅ Send Order Received Email to Customer
 async function sendCustomerOrderConfirmation(order) {
   try {
     console.log(`📧 Sending customer confirmation for order: ${order._id} to ${order.customerEmail}`);
-
+    
+    // Get transporter and verify
+    const transporter = getEmailTransporter();
+    await transporter.verify();
+    console.log('✅ Email transporter verified for customer confirmation');
     const emailContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    padding: 20px; border-radius: 8px; color: white; text-align: center;">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 8px; color: white; text-align: center;">
           <h1>📚 HariBookStore</h1>
           <h2>Order Received Successfully! 🎉</h2>
         </div>
@@ -387,44 +385,51 @@ async function sendCustomerOrderConfirmation(order) {
           
           <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0;">
             <h4>⏳ What happens next?</h4>
-            <p>1️⃣ We will verify your payment using the UTR number</p>
-            <p>2️⃣ Once verified, we'll confirm your order</p>
-            <p>3️⃣ Your book will be delivered within 3 working days</p>
+            <p>1. We will verify your payment using the UTR number</p>
+            <p>2. Once verified, we'll confirm your order</p>
+            <p>3. Your book will be delivered within 3 working days</p>
           </div>
           
           <div style="text-align: center; margin-top: 20px;">
             <p>Thank you for choosing HariBookStore! 📚</p>
-            <p style="color: #666; font-size: 14px;">
-              For any queries, contact us at ${process.env.ADMIN_EMAIL || "payment.haribookstore1@gmail.com"}
-            </p>
+            <p style="color: #666; font-size: 14px;">For any queries, reply to this email or contact us at ${process.env.EMAIL_USER}</p>
           </div>
         </div>
       </div>
     `;
 
-    const { data, error } = await resend.emails.send({
-      from: "HariBookStore <no-reply@haribookstore.com>",
+    const info = await transporter.sendMail({
+      from: `"HariBookStore" <${process.env.EMAIL_USER}>`,
       to: order.customerEmail,
       subject: `📚 Order Received: ${order.bookDetails.bookName} - Order #${order._id}`,
-      html: emailContent,
+      html: emailContent
     });
-
-    if (error) throw new Error(error.message || "Failed to send customer confirmation email");
-
-    console.log(`✅ Customer confirmation sent successfully for order: ${order._id}`, data);
+    
+    console.log(`✅ Customer confirmation sent successfully for order: ${order._id}`, {
+      messageId: info.messageId,
+      to: order.customerEmail
+    });
   } catch (error) {
-    console.error(`❌ Customer confirmation email error for order ${order._id}:`, error.message);
+    console.error(`❌ Customer confirmation email error for order ${order._id}:`, error);
+    
+    if (error.code === 'EAUTH') {
+      console.error('❌ Email authentication failed. Check Gmail app password.');
+    } else if (error.code === 'ECONNECTION') {
+      console.error('❌ Unable to connect to email server.');
+    }
   }
 }
-// ✅ Send Order Confirmed Email to Customer
+
 async function sendOrderConfirmedEmail(order) {
   try {
     console.log(`📧 Sending order confirmation for order: ${order._id}`);
-
+    
+    // Get transporter and verify
+    const transporter = getEmailTransporter();
+    await transporter.verify();
     const emailContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-                    padding: 20px; border-radius: 8px; color: white; text-align: center;">
+        <div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); padding: 20px; border-radius: 8px; color: white; text-align: center;">
           <h1>✅ Order Confirmed!</h1>
           <h2>Your book is on its way! 🚚</h2>
         </div>
@@ -445,14 +450,15 @@ async function sendOrderConfirmedEmail(order) {
             <h4>🚚 Delivery Information:</h4>
             <p><strong>Estimated Delivery:</strong> Within 3 working days</p>
             <p><strong>Delivery States:</strong> Andhra Pradesh, Telangana, Odisha</p>
-            <p>Your book will be carefully packed and delivered soon.</p>
+            <p>Your book will be carefully packed and delivered to your address.</p>
           </div>
           
           ${order.adminNotes ? `
-            <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
-              <h4>📝 Order Notes:</h4>
-              <p>${order.adminNotes}</p>
-            </div>` : ""}
+          <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
+            <h4>📝 Order Notes:</h4>
+            <p>${order.adminNotes}</p>
+          </div>
+          ` : ''}
           
           <div style="text-align: center; margin-top: 20px;">
             <p>Thank you for choosing HariBookStore! 📚</p>
@@ -463,115 +469,112 @@ async function sendOrderConfirmedEmail(order) {
       </div>
     `;
 
-    const { data, error } = await resend.emails.send({
-      from: "HariBookStore <no-reply@haribookstore.com>",
+    const info = await transporter.sendMail({
+      from: `"HariBookStore" <${process.env.EMAIL_USER}>`,
       to: order.customerEmail,
       subject: `✅ Order Confirmed: ${order.bookDetails.bookName} - Delivery in 3 days!`,
-      html: emailContent,
+      html: emailContent
     });
-
-    if (error) throw new Error(error.message || "Failed to send confirmation email");
-
-    console.log(`✅ Order confirmation sent successfully for order: ${order._id}`, data);
+    
+    console.log(`✅ Order confirmation sent successfully for order: ${order._id}`, {
+      messageId: info.messageId,
+      to: order.customerEmail
+    });
   } catch (error) {
-    console.error(`❌ Order confirmation email error for order ${order._id}:`, error.message);
+    console.error(`❌ Order confirmation email error for order ${order._id}:`, error);
+    
+    if (error.code === 'EAUTH') {
+      console.error('❌ Email authentication failed. Check Gmail app password.');
+    }
   }
 }
 
-// ========================= 📧 SEND ORDER CANCELLED EMAIL =========================
-// ------------------------ 📧 SEND ORDER CANCELLED EMAIL ------------------------
 async function sendOrderCancelledEmail(order) {
   try {
-    console.log(`📧 Sending order cancellation email for order: ${order._id}`);
-
+    console.log(`📧 Sending order cancellation for order: ${order._id}`);
+    const transporter = getEmailTransporter();
+    await transporter.verify();
     const emailContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="background: #ef4444; padding: 20px; border-radius: 8px; color: white; text-align: center;">
           <h1>❌ Order Cancelled</h1>
           <h2>Payment Verification Failed</h2>
         </div>
+        
         <div style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; margin-top: 10px;">
           <p>Dear <strong>${order.customerName}</strong>,</p>
-          <p>We’re sorry to inform you that your payment could not be verified for the following order:</p>
-
+          <p>We're sorry to inform you that we couldn't verify your payment for the following order:</p>
+          
           <h3>📋 Order Details:</h3>
           <p><strong>Order ID:</strong> ${order._id}</p>
           <p><strong>Book:</strong> ${order.bookDetails.bookName}</p>
           <p><strong>UTR:</strong> ${order.payment.utr}</p>
-
-          ${
-            order.adminNotes
-              ? `<div style="background: #fef2f2; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ef4444;">
-                  <h4>📝 Reason for Cancellation:</h4>
-                  <p>${order.adminNotes}</p>
-                </div>`
-              : ""
-          }
-
-          <div style="background: #fff7ed; padding: 15px; border-radius: 8px; margin: 20px 0;">
-            <h4>🔄 What You Can Do:</h4>
-            <ul style="padding-left: 20px; color: #333;">
-              <li>Check your UTR number and resubmit the form</li>
-              <li>Ensure payment was made to <strong>7416219267@ybl</strong></li>
-              <li>Contact us if you believe this is an error</li>
-            </ul>
+          
+          ${order.adminNotes ? `
+          <div style="background: #fef2f2; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ef4444;">
+            <h4>📝 Reason for Cancellation:</h4>
+            <p>${order.adminNotes}</p>
           </div>
-
+          ` : ''}
+          
+          <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin: 20px 0;">
+            <h4>🔄 What you can do:</h4>
+            <p>1. Check your UTR number and try again</p>
+            <p>2. Ensure the payment was made to: 7416219267@ybl</p>
+            <p>3. Contact us if you believe this is an error</p>
+          </div>
+          
           <div style="text-align: center; margin-top: 20px;">
-            <p>We apologize for the inconvenience.</p>
-            <p style="color: #666; font-size: 14px;">
-              For help, reply to this email or contact us at ${process.env.ADMIN_EMAIL || "payment.haribookstore1@gmail.com"}
-            </p>
+            <p>We apologize for any inconvenience.</p>
+            <p style="color: #666; font-size: 14px;">For assistance, reply to this email or contact us at ${process.env.EMAIL_USER}</p>
           </div>
         </div>
       </div>
     `;
 
-    const response = await resend.emails.send({
-      from: "HariBookStore <no-reply@haribookstore.com>",
+    const info = await transporter.sendMail({
+      from: `"HariBookStore" <${process.env.EMAIL_USER}>`,
       to: order.customerEmail,
       subject: `❌ Order Cancelled: ${order.bookDetails.bookName} - Payment Issue`,
-      html: emailContent,
+      html: emailContent
     });
-
-    console.log(`✅ Order cancellation email sent successfully!`, {
-      orderId: order._id,
-      to: order.customerEmail,
-      resendId: response.data?.id || "OK",
-    });
+    
+    console.log(`✅ Order cancellation sent successfully for order: ${order._id}`);
   } catch (error) {
-    console.error(`❌ Order cancellation email error for order ${order._id}:`, error.message);
+    console.error(`❌ Order cancellation email error for order ${order._id}:`, error);
+    
+    if (error.code === 'EAUTH') {
+      console.error('❌ Email authentication failed. Check Gmail app password.');
+    }
   }
 }
 
-// ------------------------ 📧 SEND ORDER STATUS UPDATE EMAIL ------------------------
 async function sendOrderStatusUpdateEmail(order) {
   try {
-    console.log(`📧 Sending order status update for order: ${order._id}, Status: ${order.orderStatus}`);
-
-    let statusMessage = "";
-    let bgColor = "";
-    let emoji = "";
+    console.log(`📧 Sending status update for order: ${order._id} - Status: ${order.orderStatus}`);
+    
+    let statusMessage = '';
+    let bgColor = '';
+    let emoji = '';
 
     switch (order.orderStatus) {
-      case "processing":
-        statusMessage = "Your order is being processed.";
-        bgColor = "#3b82f6";
-        emoji = "⚙️";
+      case 'processing':
+        statusMessage = 'Your order is being processed';
+        bgColor = '#3b82f6';
+        emoji = '⚙️';
         break;
-      case "shipped":
-        statusMessage = "Your order has been shipped!";
-        bgColor = "#8b5cf6";
-        emoji = "🚚";
+      case 'shipped':
+        statusMessage = 'Your order has been shipped!';
+        bgColor = '#8b5cf6';
+        emoji = '🚚';
         break;
-      case "delivered":
-        statusMessage = "Your order has been delivered!";
-        bgColor = "#22c55e";
-        emoji = "✅";
+      case 'delivered':
+        statusMessage = 'Your order has been delivered!';
+        bgColor = '#22c55e';
+        emoji = '✅';
         break;
       default:
-        console.log("ℹ️ No email sent for this status.");
-        return;
+        return; // Don't send email for other statuses
     }
 
     const emailContent = `
@@ -580,46 +583,51 @@ async function sendOrderStatusUpdateEmail(order) {
           <h1>${emoji} Order Update</h1>
           <h2>${statusMessage}</h2>
         </div>
+        
         <div style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; margin-top: 10px;">
           <p>Dear <strong>${order.customerName}</strong>,</p>
-
+          
           <h3>📋 Order Details:</h3>
           <p><strong>Order ID:</strong> ${order._id}</p>
           <p><strong>Book:</strong> ${order.bookDetails.bookName}</p>
-          <p><strong>Status:</strong> ${order.orderStatus.toUpperCase()}</p>
-
-          ${
-            order.orderStatus === "delivered"
-              ? `<div style="background: #d1fae5; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                  <h4>🎉 Congratulations!</h4>
-                  <p>Your book has been successfully delivered. We hope you enjoy reading it!</p>
-                  <p>Thank you for choosing HariBookStore! 📚</p>
-                </div>`
-              : ""
-          }
-
+          <p><strong>Status:</strong> ${order.orderStatus.charAt(0).toUpperCase() + order.orderStatus.slice(1)}</p>
+          
+          ${order.orderStatus === 'delivered' ? `
+          <div style="background: #d1fae5; padding: 15px; border-radius: 8px; margin: 20px 0;">
+            <h4>🎉 Congratulations!</h4>
+            <p>Your book has been successfully delivered. We hope you enjoy reading it!</p>
+            <p>Thank you for choosing HariBookStore! 📚</p>
+          </div>
+          ` : ''}
+          
           <div style="text-align: center; margin-top: 20px;">
-            <p>We’ll keep you updated on your order progress.</p>
-            <p style="color: #666; font-size: 14px;">Need help? Reply to this email.</p>
+            <p>Thank you for your patience! 📚</p>
+            <p style="color: #666; font-size: 14px;">For any queries, reply to this email</p>
           </div>
         </div>
       </div>
     `;
 
-    const response = await resend.emails.send({
-      from: "HariBookStore <no-reply@haribookstore.com>",
+    // Get transporter and verify
+    const emailTransporter = getEmailTransporter();
+    await emailTransporter.verify();
+    
+    const info = await emailTransporter.sendMail({
+      from: `"HariBookStore" <${process.env.EMAIL_USER}>`,
       to: order.customerEmail,
       subject: `${emoji} Order Update: ${order.bookDetails.bookName} - ${statusMessage}`,
-      html: emailContent,
+      html: emailContent
     });
-
-    console.log(`✅ Status update email sent successfully!`, {
-      orderId: order._id,
+    
+    console.log(`✅ Status update sent successfully for order: ${order._id}`, {
       status: order.orderStatus,
-      to: order.customerEmail,
-      resendId: response.data?.id || "OK",
+      to: order.customerEmail
     });
   } catch (error) {
-    console.error(`❌ Status update email error for order ${order._id}:`, error.message);
+    console.error(`❌ Status update email error for order ${order._id}:`, error);
+    
+    if (error.code === 'EAUTH') {
+      console.error('❌ Email authentication failed. Check Gmail app password.');
+    }
   }
 }
