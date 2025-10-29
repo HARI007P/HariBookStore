@@ -25,7 +25,7 @@
     "price": 1,
     "donar": "Mr.Suresh",
     "bookcode": "HBS003",
-    "category": "Sale",
+    "category": "Sold Out",
     "image": "https://imgs.search.brave.com/M7fwsq-vowVTP_ASRXAP-0wUHtlHVr9oCNCqgxmH5yg/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9nYXJ1/ZGFsaWZlLmluL2Nh/Y2hlL2xhcmdlL3By/b2R1Y3QvODM0NzYv/V0lTRE9NLTMuanBl/Zw",
     "description": "A spiritual and cultural exploration of Lord Muruga, revered as the God of War and Victory in Hindu tradition. This book delves into his divine legends, symbolism, and significance in guiding devotees towards courage, wisdom, and devotion."
   },
@@ -55,7 +55,7 @@
     "price": 1,
     "donar": "Mr.Raju",
     "bookcode": "HBS006",
-    "category": "Sale",
+    "category": "Sold Out",
     "image": "https://bookspringindia.in/cdn/shop/products/mindset_360x.jpg?v=1626259428",
     "description": "Mindset by Carol S. Dweck explores the power of having a growth mindset versus a fixed mindset. It reveals how our beliefs about our abilities shape our success in education, work, sports, and relationships. The book teaches readers how adopting a growth mindset can unlock potential, inspire resilience, and transform the way we approach challenges."
   },
@@ -153,9 +153,9 @@
     "id": 16,
     "name": "Elon Musk",
     "price": 1,
-    "donar": "Mr.Uma Mahesh",
+    "donar": "Mr.Uma Mahes",
     "bookcode": "HBS016",
-    "category": "Sale",
+    "category": "Sold Out",
     "image": "https://bookspringindia.in/cdn/shop/products/elonmusk_1024x1024@2x.png?v=1626257251",
     "description": "A biography by Ashlee Vance that explores the extraordinary life of Elon Musk, covering his ventures in Tesla, SpaceX, and SolarCity, and his mission to push the boundaries of technology and innovation."
   },
