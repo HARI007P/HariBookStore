@@ -146,8 +146,8 @@ function Login() {
                 transition={{ delay: 0.5 }}
                 className="text-center mb-8"
               >
-                <h2 className="text-3xl font-bold text-white mb-2">Sign In</h2>
-                <p className="text-white/70">Access your account to continue</p>
+                <h2 className="text-3xl font-bold text-white mb-2">Login In</h2>
+                <p className="text-l text-white font-semibold">Demo Account details:-<br></br> Email: hari07102004p@gmail.com | Password: Hari@2004</p>
               </motion.div>
 
               <form onSubmit={handleSubmit(handleLogin)} className="space-y-6">
@@ -242,11 +242,11 @@ function Login() {
                   {loading ? (
                     <>
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Signing In...
+                      login In...
                     </>
                   ) : (
                     <>
-                      Sign In
+                      Login
                       <FaArrowRight className="transition-transform group-hover:translate-x-1" />
                     </>
                   )}
