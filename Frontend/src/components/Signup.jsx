@@ -13,7 +13,7 @@ function Signup() {
   const location = useLocation();
   const navigate = useNavigate();
   const from = location.state?.from?.pathname || "/";
-  const { setAuthUser, isAuthenticated } = useAuth();
+  const { authUser, setAuthUser, isAuthenticated } = useAuth();
 
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const [loading, setLoading] = useState(false);
@@ -28,73 +28,96 @@ function Signup() {
 
   const password = watch("password", "");
 
-  // OTP Timer
+  // Timer countdown for OTP
   useEffect(() => {
     let interval;
     if (step === 2 && timer > 0) {
-      interval = setInterval(() => setTimer(prev => prev - 1), 1000);
+      interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
     }
     return () => clearInterval(interval);
   }, [step, timer]);
 
-  // OTP Change Handling (auto verification removed)
+  // OTP input handling
   const handleOTPChange = (value, index) => {
     if (isNaN(value)) return;
     const newOtp = [...otp];
     newOtp[index] = value.slice(-1);
     setOtp(newOtp);
-
-    if (value && index < 5) inputRefs.current[index + 1].focus();
+    
+    // Move to next input if current is filled
+    if (value && index < 5) {
+      inputRefs.current[index + 1].focus();
+    }
+    
+    // Auto-submit when all 6 digits are entered
+    const completedOtp = [...newOtp];
+    if (completedOtp.every(digit => digit !== "") && completedOtp.join("").length === 6) {
+      setTimeout(() => {
+        handleOTPVerification();
+      }, 500); // Small delay to show completion state
+    }
   };
 
   const handleKeyDown = (e, index) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1].focus();
     }
+    // Submit on Enter key if OTP is complete
+    if (e.key === "Enter" && otp.join("").length === 6) {
+      handleOTPVerification();
+    }
   };
 
-  // Send OTP
+  // Step 1: Send OTP
   const handleSignupFormSubmit = async (data) => {
     try {
       setLoading(true);
       setUserData(data);
-      const response = await otpService.sendSignupOTP(data);
-
+      const response = await otpService.sendSignupOTP({
+        fullname: data.fullname,
+        email: data.email,
+        password: data.password
+      });
+      
       if (response.success) {
-        toast.success("📫 OTP sent! Check your inbox.");
+        toast.success("📫 OTP sent to your email! Please check your inbox.");
         setStep(2);
         setTimer(300); // 5 minutes
       } else {
         toast.error(response.message || "Failed to send OTP");
       }
     } catch (error) {
-      const msg = error.response?.data?.message || "Failed to send OTP.";
-      toast.error(msg);
+      console.error("Signup error:", error);
+      const errorMessage = error.response?.data?.message || "Failed to send OTP. Please try again.";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
-  // Verify OTP
+  // Step 2: Verify OTP
   const handleOTPVerification = async () => {
     try {
       setLoading(true);
       const response = await otpService.verifySignupOTP({
         email: userData.email,
-        otp: otp.join(""),
+        otp: otp.join("")
       });
-
+      
       if (response.success) {
         setSuccess(true);
         setAuthUser(response.user);
-        toast.success(response.message || "Account created successfully!");
-        setTimeout(() => navigate(from, { replace: true }), 2000);
+        toast.success(response.message || "Account created successfully! Welcome to HariBookStore 🎉");
+        setTimeout(() => {
+          navigate(from, { replace: true });
+        }, 2000);
       } else {
-        toast.error(response.message || "Invalid OTP");
+        toast.error(response.message || "Invalid OTP. Please try again.");
       }
     } catch (error) {
-      const msg = error.response?.data?.message || "OTP verification failed.";
-      toast.error(msg);
+      console.error("OTP verification error:", error);
+      const errorMessage = error.response?.data?.message || "OTP verification failed. Please try again.";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -104,26 +127,33 @@ function Signup() {
   const resendOTP = async () => {
     try {
       setLoading(true);
-      const response = await otpService.sendSignupOTP(userData);
-
+      const response = await otpService.sendSignupOTP({
+        fullname: userData.fullname,
+        email: userData.email,
+        password: userData.password
+      });
+      
       if (response.success) {
-        toast.success("🔄 OTP resent!");
+        toast.success("🔄 New OTP sent to your email!");
+        setTimer(300); // Reset timer to 5 minutes
         setOtp(new Array(6).fill(""));
-        setTimer(300);
       } else {
         toast.error(response.message || "Failed to resend OTP");
       }
-    } catch {
-      toast.error("Failed to resend OTP. Try again.");
+    } catch (error) {
+      console.error("Resend OTP error:", error);
+      toast.error("Failed to resend OTP. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
+  // Redirect if already authenticated
   if (isAuthenticated()) {
     navigate(from, { replace: true });
     return null;
   }
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-10 relative overflow-hidden">
       {/* Confetti when success */}
@@ -225,8 +255,9 @@ function Signup() {
                 transition={{ delay: 0.5 }}
                 className="text-center mb-8"
               >
+
                 <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
-                <p className="text-white/70">Join our community of book lovers</p>
+                <p className="text-white">Due to Some reasons mail service stoped you can directly login with demo account mentioned below or in login page</p>
               </motion.div>
 
               <AnimatePresence mode="wait">
@@ -413,7 +444,7 @@ function Signup() {
                         </>
                       ) : (
                         <>
-                          Send OTP
+                          submit
                           <FaArrowRight className="transition-transform group-hover:translate-x-1" />
                         </>
                       )}
@@ -584,7 +615,12 @@ function Signup() {
                     >
                       Sign In
                     </Link>
+                    </p>
+                    <p className="text-white">
+                   Use Demo Account -<br></br> Email: hari07102004p@gmail.com | Password: Hari@2004
+                    
                   </p>
+
                 </motion.div>
               )}
             </div>
