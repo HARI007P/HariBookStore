@@ -25,7 +25,7 @@
     "price": 1,
     "donar": "Mr.Suresh",
     "bookcode": "HBS003",
-    "category": "Sale",
+    "category": "Sold Out",
     "image": "https://imgs.search.brave.com/M7fwsq-vowVTP_ASRXAP-0wUHtlHVr9oCNCqgxmH5yg/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9nYXJ1/ZGFsaWZlLmluL2Nh/Y2hlL2xhcmdlL3By/b2R1Y3QvODM0NzYv/V0lTRE9NLTMuanBl/Zw",
     "description": "A spiritual and cultural exploration of Lord Muruga, revered as the God of War and Victory in Hindu tradition. This book delves into his divine legends, symbolism, and significance in guiding devotees towards courage, wisdom, and devotion."
   },
@@ -75,7 +75,7 @@
     "price": 1,
     "donar": "Mr.Avinash",
     "bookcode": "HBS008",
-    "category": "Sale",
+    "category": "Sold Out",
     "image": "https://bookspringindia.in/cdn/shop/products/startwithwhy_360x.jpg?v=1626260960",
     "description": "'Start With Why' by Simon Sinek explores how great leaders and organizations inspire action by focusing on purpose before anything else. Instead of asking 'what' or 'how', they start with 'why'. The book shares real-world examples of leaders who created loyal followers and built lasting success by leading with vision and clarity."
   },
